@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Интерактивный роадмап по Blender: 9 этапов, 34 урока, ссылки на лучшие туториалы и трекер прогресса.">
+<meta name="theme-color" content="#0d0f13">
+<title>Blender Roadmap — от куба до портфолио</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l9 5v10l-9 5-9-5V7z' fill='none' stroke='%23ff7a1c' stroke-width='2'/%3E%3Cpath d='M12 22V12M12 12l9-5M12 12L3 7' stroke='%23ff7a1c' stroke-width='2' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ============ ПАЛИТРА / БАЗА ============ */
+:root{
+  --bg0:#0d0f13; --bg1:#12151b; --surface:#181c24; --surface2:#1f2430; --overlay:#232937;
+  --line:#2a3040; --line2:#3a4258;
+  --text:#f4efe7; --muted:#9aa2b5; --dim:#6d7488;
+  --orange:#ff7a1c; --orange2:#ffb25e; --blue:#3f8cff; --green:#7ede57; --red:#ff4d61; --amber:#ffc233;
+  --ok:#4ade80; --warn:#ffc233; --danger:#ff4d61; --info:#3f8cff;
+  --disp:'Unbounded',system-ui,sans-serif; --body:'Manrope',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  --sy:0;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{background:var(--bg0);color:var(--text);font:400 15px/1.6 var(--body);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+body.lock{overflow:hidden}
+::selection{background:var(--orange);color:#14100a}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+img,svg{display:block}
+:focus-visible{outline:2px solid var(--orange);outline-offset:2px;border-radius:6px}
+.hide{display:none!important}
+/* скроллбары в стиле страницы */
+*{scrollbar-width:thin;scrollbar-color:#4a5470 var(--bg1)}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:var(--bg1)}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#3a4258,#2a3040);border-radius:6px;border:2px solid var(--bg1)}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,var(--orange),#c95a10)}
+
+/* ============ ФОН ============ */
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:radial-gradient(120% 90% at 50% 0%,#151923 0%,var(--bg0) 60%)}
+.bg-grid{position:absolute;left:-40%;right:-40%;bottom:-34%;height:75%;
+  background-image:repeating-linear-gradient(0deg,rgba(122,144,196,.10) 0 1px,transparent 1px 64px),repeating-linear-gradient(90deg,rgba(122,144,196,.10) 0 1px,transparent 1px 64px);
+  transform:perspective(900px) rotateX(58deg) translateY(calc(var(--sy)*.03px));
+  -webkit-mask-image:linear-gradient(to top,#000 20%,transparent 85%);mask-image:linear-gradient(to top,#000 20%,transparent 85%)}
+.blob{position:absolute;border-radius:50%;filter:blur(90px);opacity:.32;will-change:transform}
+.blob.b1{width:560px;height:560px;left:-160px;top:-140px;background:radial-gradient(circle,#ff7a1c,transparent 65%);transform:translateY(calc(var(--sy)*-.06px))}
+.blob.b2{width:640px;height:640px;right:-220px;top:6%;background:radial-gradient(circle,#2b62d9,transparent 65%);transform:translateY(calc(var(--sy)*-.10px))}
+.blob.b3{width:520px;height:520px;left:14%;bottom:-260px;background:radial-gradient(circle,#3f9a2f,transparent 65%);opacity:.2;transform:translateY(calc(var(--sy)*-.04px))}
+.grain{position:absolute;inset:0;opacity:.05;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.6'/%3E%3C/svg%3E")}
+
+/* ============ НАВИГАЦИЯ ============ */
+.nav{position:fixed;top:0;left:0;right:0;z-index:60;height:64px;display:flex;align-items:center;gap:20px;padding:0 22px;
+  background:rgba(13,15,19,.72);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .25s,box-shadow .25s}
+.nav.scrolled{border-bottom-color:var(--line);box-shadow:0 10px 34px rgba(0,0,0,.35)}
+.brand{display:flex;align-items:center;gap:10px;font:700 13px var(--disp);letter-spacing:.04em}
+.brand svg{width:26px;height:26px;color:var(--orange)}
+.brand em{font-style:normal;color:var(--orange)}
+.nav-links{display:flex;gap:4px;margin-left:8px}
+.nav-links a{position:relative;padding:8px 12px;font:600 13px var(--body);color:var(--muted);border-radius:8px;transition:color .15s,background .15s}
+.nav-links a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.nav-links a.active{color:var(--orange2)}
+.nav-links a.active::after{content:'';position:absolute;left:12px;right:12px;bottom:2px;height:2px;border-radius:2px;background:linear-gradient(90deg,var(--orange),var(--amber))}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+.nav-prog{display:flex;align-items:center;gap:8px;font:700 12px var(--mono);color:var(--orange2)}
+.nav-prog svg{width:28px;height:28px;transform:rotate(-90deg)}
+.nav-prog .tr{stroke:var(--line);fill:none;stroke-width:3}
+.nav-prog .pr{stroke:url(#navGrad);fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:62.83;stroke-dashoffset:62.83;transition:stroke-dashoffset .6s ease}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:10px;font:700 13px var(--body);transition:transform .15s,box-shadow .15s,filter .15s,background .15s;white-space:nowrap}
+.btn:active{transform:translateY(1px) scale(.98)}
+.btn-pri{background:linear-gradient(120deg,var(--orange),#ff9440);color:#1a1006;box-shadow:0 6px 22px rgba(255,122,28,.3)}
+.btn-pri:hover{transform:translateY(-1px);filter:brightness(1.08);box-shadow:0 10px 28px rgba(255,122,28,.42)}
+.btn-ghost{border:1px solid var(--line2);color:var(--text);background:rgba(255,255,255,.02)}
+.btn-ghost:hover{border-color:var(--orange);color:var(--orange2);transform:translateY(-1px)}
+.btn-danger{border:1px solid rgba(255,77,97,.4);color:var(--red)}
+.btn-danger:hover{background:rgba(255,77,97,.1);transform:translateY(-1px)}
+.btn-sm{padding:7px 12px;font-size:12px;border-radius:8px}
+.burger{display:none;width:40px;height:40px;place-items:center;border:1px solid var(--line);border-radius:9px;color:var(--muted)}
+.burger svg{width:20px;height:20px}
+.mmenu{position:fixed;top:64px;left:0;right:0;z-index:55;background:rgba(18,21,27,.97);border-bottom:1px solid var(--line);padding:12px 20px 18px;display:none;flex-direction:column;gap:4px}
+.mmenu.open{display:flex}
+.mmenu a{padding:12px 10px;font:700 15px var(--body);color:var(--muted);border-radius:9px}
+.mmenu a:hover{background:rgba(255,255,255,.05);color:var(--text)}
+
+/* ============ ОБЩЕЕ ============ */
+.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+section{scroll-margin-top:84px}
+.sec-head{margin-bottom:30px}
+.eyebrow{font:700 11px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--orange);display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.eyebrow::before{content:'';width:26px;height:2px;background:linear-gradient(90deg,var(--orange),var(--amber));border-radius:2px}
+h2{font:700 clamp(22px,3vw,32px)/1.2 var(--disp);letter-spacing:-.01em}
+.sec-sub{color:var(--muted);margin-top:10px;max-width:640px}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.3,1);transition-delay:var(--d,0ms)}
+.reveal.in{opacity:1;transform:none}
+.stage{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.3,1);transition-delay:var(--d,0ms)}
+.stage.in{opacity:1;transform:none}
+kbd{display:inline-block;padding:2px 7px;font:700 11px var(--mono);color:var(--orange2);background:var(--surface2);border:1px solid var(--line2);border-bottom-width:3px;border-radius:6px}
+
+/* ============ HERO ============ */
+.hero{padding:132px 0 70px;display:grid;grid-template-columns:1.02fr .98fr;gap:52px;align-items:center}
+.hero-eyebrow{font:700 11px var(--mono);letter-spacing:.24em;color:var(--orange);text-transform:uppercase;margin-bottom:18px}
+.hero-eyebrow .cur{display:inline-block;width:8px;height:14px;background:var(--orange);vertical-align:-2px;margin-left:6px;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+h1{font:900 clamp(28px,3.7vw,46px)/1.14 var(--disp);letter-spacing:-.015em}
+h1 .grad{background:linear-gradient(100deg,var(--orange) 10%,var(--amber) 55%,var(--red) 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{color:var(--muted);font-size:16px;margin:20px 0 26px;max-width:520px}
+.hero-stats{display:grid;grid-template-columns:repeat(4,auto);gap:26px;margin-bottom:28px}
+.hstat b{display:block;font:700 26px var(--mono);color:var(--text)}
+.hstat span{font:600 11px var(--body);color:var(--dim);text-transform:uppercase;letter-spacing:.08em}
+.hstat:nth-child(1) b{color:var(--orange2)}.hstat:nth-child(2) b{color:var(--blue)}.hstat:nth-child(3) b{color:var(--green)}.hstat:nth-child(4) b{color:var(--red)}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-note{margin-top:18px;font:400 11px var(--mono);color:var(--dim)}
+
+/* ============ ВЬЮПОРТ ============ */
+.vp{background:var(--surface);border:1px solid var(--line2);border-radius:16px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5),0 0 0 1px rgba(255,122,28,.06)}
+.vp-head{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;background:var(--overlay);border-bottom:1px solid var(--line);font:700 10px var(--mono);color:var(--dim);letter-spacing:.06em}
+.vp-head .l{display:flex;align-items:center;gap:8px;color:var(--muted)}
+.vp-head .l svg{width:13px;height:13px;color:var(--orange)}
+.vp-stage{position:relative;height:clamp(280px,32vw,380px);background:#12151b}
+.vp-stage canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}
+.vp-stage canvas.grabbing{cursor:grabbing}
+.vp-stats{position:absolute;left:12px;bottom:10px;font:700 10px var(--mono);color:rgba(154,162,181,.85);pointer-events:none;letter-spacing:.04em}
+.vp-hint{padding:8px 14px;font:400 10px var(--mono);color:var(--dim);border-top:1px solid var(--line);background:var(--bg1)}
+.vp-rail{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:12px 14px 14px;background:var(--bg1);border-top:1px solid var(--line)}
+.vcell{display:flex;flex-direction:column;gap:6px;min-width:0}
+.vcell>label,.vcell .vlabel{display:flex;justify-content:space-between;font:700 9px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--dim)}
+.vcell .vlabel output{color:var(--orange2)}
+.seg{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--surface);padding:4px;border-radius:9px;border:1px solid var(--line)}
+.seg button{padding:7px 4px;font:700 10px var(--mono);letter-spacing:.06em;color:var(--dim);border-radius:6px;transition:all .15s}
+.seg button:hover{color:var(--text)}
+.seg button.on{background:linear-gradient(120deg,var(--orange),#ff9440);color:#1a1006}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:4px;border-radius:3px;background:var(--line);outline-offset:4px}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--text);border:3px solid var(--orange);cursor:pointer;transition:transform .12s;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
+input[type=range]::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--text);border:3px solid var(--orange);cursor:pointer}
+input[type=range]::-moz-range-track{background:transparent}
+.swatches{display:flex;gap:8px;align-items:center;height:22px}
+.swatch{width:20px;height:20px;border-radius:50%;border:2px solid transparent;transition:transform .15s,border-color .15s}
+.swatch:hover{transform:scale(1.18)}
+.swatch.on{border-color:var(--text);transform:scale(1.12)}
+.switchrow{display:flex;align-items:center;gap:8px;font:600 10px var(--mono);color:var(--muted);cursor:pointer;user-select:none}
+.switch{position:relative;width:30px;height:16px;flex:none}
+.switch input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.switch i{position:absolute;inset:0;background:var(--line);border-radius:9px;transition:background .18s}
+.switch i::after{content:'';position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--muted);transition:transform .18s,background .18s}
+.switch input:checked+i{background:rgba(255,122,28,.5)}
+.switch input:checked+i::after{transform:translateX(14px);background:var(--orange)}
+.vactions{grid-column:span 2;display:flex;gap:6px;align-items:flex-end}
+.vactions .btn{flex:1;padding:8px 6px;font-size:10px;font-family:var(--mono)}
+.vactions svg{width:13px;height:13px}
+
+/* ============ ТУЛБАР КАРТЫ ============ */
+.map-sec{padding:40px 0 30px}
+.toolbar{position:sticky;top:76px;z-index:30;display:flex;flex-direction:column;gap:10px;padding:12px;margin-bottom:34px;
+  background:rgba(18,21,27,.88);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:14px}
+.tb-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.search{flex:1;min-width:200px;display:flex;align-items:center;gap:9px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 12px;transition:border-color .15s}
+.search:focus-within{border-color:var(--orange)}
+.search svg{width:15px;height:15px;color:var(--dim);flex:none}
+.search input{flex:1;background:none;border:none;color:var(--text);font:500 13px var(--body);padding:10px 0;outline:none;min-width:0}
+.search input::placeholder{color:var(--dim)}
+.viewtog{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px}
+.viewtog button{display:flex;align-items:center;gap:6px;padding:7px 12px;border-radius:7px;font:700 11px var(--mono);color:var(--dim);transition:all .15s}
+.viewtog button svg{width:13px;height:13px}
+.viewtog button.on{background:var(--overlay);color:var(--orange2)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:7px 13px;border-radius:99px;border:1px solid var(--line);font:700 11px var(--mono);color:var(--muted);transition:all .15s}
+.chip:hover{border-color:var(--line2);color:var(--text)}
+.chip.on{background:rgba(255,122,28,.14);border-color:var(--orange);color:var(--orange2)}
+select{background:var(--surface);border:1px solid var(--line);color:var(--muted);font:600 12px var(--body);padding:8px 10px;border-radius:9px;outline:none;cursor:pointer}
+select:hover{border-color:var(--line2)}
+select:disabled{opacity:.4;cursor:not-allowed}
+.count{margin-left:auto;font:700 11px var(--mono);color:var(--dim)}
+
+/* ============ ДОРОЖНАЯ КАРТА ============ */
+.roadmap{position:relative;display:flex;flex-direction:column;gap:36px;padding:8px 0 26px}
+.roadmap::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;transform:translateX(-50%);border-radius:2px;opacity:.5;
+  background:linear-gradient(180deg,var(--orange),var(--blue) 14%,var(--green) 28%,var(--red) 42%,var(--orange) 55%,var(--blue) 68%,var(--green) 80%,var(--red) 90%,var(--amber))}
+.mod{display:grid;grid-template-columns:1fr 76px 1fr;align-items:center}
+.mod>*{grid-row:1}
+.mod .node{grid-column:2;justify-self:center;z-index:2;width:46px;height:46px;border-radius:50%;background:var(--bg1);border:2px solid var(--mc);
+  display:grid;place-items:center;font:700 14px var(--mono);color:var(--mc);box-shadow:0 0 22px color-mix(in srgb,var(--mc) 35%,transparent)}
+.mod .node svg{width:18px;height:18px}
+.mod.complete .node{background:var(--ok);border-color:var(--ok);color:#0d1a10}
+.mod .card{grid-column:1;position:relative;background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:14px;padding:18px 18px 14px;transition:border-color .2s,transform .2s,box-shadow .2s;overflow:hidden}
+.mod .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--mc),transparent 75%)}
+.mod .card:hover{border-color:color-mix(in srgb,var(--mc) 45%,var(--line));transform:translateY(-2px);box-shadow:0 16px 44px rgba(0,0,0,.35)}
+.mod.complete .card{border-color:rgba(74,222,128,.3)}
+.mod:nth-child(even) .card{grid-column:3}
+.mod .side{grid-column:3;padding-left:30px}
+.mod:nth-child(even) .side{grid-column:1;padding-left:0;padding-right:30px;text-align:right}
+.side .gnum{font:900 52px/1 var(--disp);color:transparent;-webkit-text-stroke:1.5px color-mix(in srgb,var(--mc) 55%,transparent)}
+.side .gweek{font:700 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--mc);margin-top:8px}
+.side .ghours{font:400 12px var(--mono);color:var(--dim);margin-top:4px}
+.mod-badge{display:flex;justify-content:space-between;align-items:center;gap:10px;font:700 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mc);margin-bottom:8px}
+.mod-badge .hrs{color:var(--dim);letter-spacing:.04em;border:1px solid var(--line);padding:3px 8px;border-radius:99px}
+.mod h3{font:700 17px/1.3 var(--disp);letter-spacing:-.01em}
+.mod-goal{color:var(--muted);font-size:13px;margin:7px 0 12px}
+.mod-prog{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bar{flex:1;height:5px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;border-radius:3px;background:linear-gradient(90deg,var(--mc),color-mix(in srgb,var(--mc) 55%,#fff));transition:width .5s cubic-bezier(.2,.7,.3,1)}
+.mod-prog .cnt{font:700 11px var(--mono);color:var(--dim);min-width:32px;text-align:right}
+.mod.complete .mod-prog .cnt{color:var(--ok)}
+.lessons{list-style:none;display:flex;flex-direction:column;gap:2px}
+.lesson{display:flex;align-items:center;gap:11px;padding:9px 9px;border-radius:10px;border:1px solid transparent;cursor:pointer;transition:background .15s,border-color .15s}
+.lesson:hover{background:rgba(255,255,255,.035);border-color:var(--line)}
+.lesson.next{border-color:rgba(255,122,28,.45);background:rgba(255,122,28,.06)}
+.check{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--line2);display:grid;place-items:center;transition:border-color .15s,background .15s;padding:0}
+.check:hover{border-color:var(--orange)}
+.check svg{width:12px;height:12px;color:#0d1a10;opacity:0;transform:scale(.4)}
+.lesson.done .check{background:var(--ok);border-color:var(--ok)}
+.lesson.done .check svg{opacity:1;transform:scale(1);animation:pop .28s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{0%{transform:scale(.3)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+.l-main{flex:1;min-width:0}
+.l-title{font:600 13.5px/1.35 var(--body);transition:color .2s}
+.lesson.project .l-title::before{content:'★ ';color:var(--amber)}
+.lesson.done .l-title{color:var(--dim);text-decoration:line-through;text-decoration-color:rgba(109,116,136,.55)}
+.l-meta{display:flex;align-items:center;gap:8px;font:400 10.5px var(--mono);color:var(--dim);margin-top:2px;flex-wrap:wrap}
+.tt{font:700 9px var(--mono);font-style:normal;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:99px}
+.tt-theory{color:var(--blue);background:rgba(63,140,255,.13)}
+.tt-practice{color:var(--green);background:rgba(126,222,87,.12)}
+.tt-project{color:var(--amber);background:rgba(255,194,51,.13)}
+.next-chip{display:none;font:700 9px var(--mono);color:#1a1006;background:linear-gradient(90deg,var(--orange),var(--amber));padding:2px 8px;border-radius:99px;letter-spacing:.06em;animation:pulse 1.6s ease infinite}
+.lesson.next .next-chip{display:inline-block}
+@keyframes pulse{50%{box-shadow:0 0 0 5px rgba(255,122,28,.15)}}
+.l-chev{flex:none;width:15px;height:15px;color:var(--dim);transition:transform .15s,color .15s}
+.lesson:hover .l-chev{transform:translateX(3px);color:var(--orange2)}
+.mod-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+.mod-foot .hint{font:400 10px var(--mono);color:var(--dim)}
+.bulk{font:700 11px var(--mono);color:var(--muted);border:1px solid var(--line);padding:7px 12px;border-radius:8px;transition:all .15s}
+.bulk:hover{color:var(--orange2);border-color:var(--orange)}
+
+/* список */
+.listview{display:flex;flex-direction:column;gap:4px}
+.lrow{display:grid;grid-template-columns:34px minmax(0,1fr) 110px 64px 110px 28px;align-items:center;gap:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--line);border-radius:11px;cursor:pointer;transition:border-color .15s,background .15s}
+.lrow:hover{border-color:var(--line2);background:var(--surface2)}
+.lrow.done .l-title{color:var(--dim);text-decoration:line-through}
+.lrow .lmod{font:700 9.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--mc)}
+.lrow .lh{font:700 12px var(--mono);color:var(--muted)}
+.lrow .lr{font:400 11px var(--mono);color:var(--dim)}
+.list-head{display:grid;grid-template-columns:34px minmax(0,1fr) 110px 64px 110px 28px;gap:12px;padding:4px 14px;font:700 9px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.empty{text-align:center;padding:70px 20px;border:1px dashed var(--line2);border-radius:16px}
+.empty svg{width:54px;height:54px;color:var(--line2);margin:0 auto 16px}
+.empty h3{font:700 17px var(--disp);margin-bottom:8px}
+.empty p{color:var(--muted);font-size:13px;margin-bottom:18px}
+
+/* ============ ПРОГРЕСС ============ */
+.prog-sec{padding:60px 0}
+.prog-grid{display:grid;grid-template-columns:300px 1fr;gap:26px;align-items:start}
+.ringcard{background:linear-gradient(160deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:16px;padding:28px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.ringwrap{position:relative;width:180px;height:180px}
+.ringwrap svg{width:180px;height:180px}
+.ringwrap .tr{fill:none;stroke:var(--line);stroke-width:11}
+.ringwrap .pr{fill:none;stroke:url(#bigGrad);stroke-width:11;stroke-linecap:round;stroke-dasharray:402.12;stroke-dashoffset:402.12;transition:stroke-dashoffset .7s cubic-bezier(.2,.7,.3,1)}
+.ringtxt{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+.ringtxt b{font:700 34px var(--mono);color:var(--orange2)}
+.ringtxt span{display:block;font:600 10px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
+.ringcard .btn{width:100%}
+.prog-right{display:flex;flex-direction:column;gap:18px}
+.pstats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.pstat{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:16px 18px}
+.pstat b{display:block;font:700 21px var(--mono)}
+.pstat span{font:600 10.5px var(--body);text-transform:uppercase;letter-spacing:.08em;color:var(--dim)}
+.pstat:nth-child(1) b{color:var(--blue)}.pstat:nth-child(2) b{color:var(--green)}.pstat:nth-child(3) b{color:var(--amber)}
+.tempocard{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:18px}
+.tempocard .trow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+.tempocard .trow b{font:700 13px var(--body)}
+.tempocard .trow output{font:700 13px var(--mono);color:var(--orange2)}
+.finish{margin-top:12px;font:700 12.5px var(--mono);color:var(--green)}
+.mini{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:14px 18px;display:flex;flex-direction:column;gap:8px}
+.mini-row{display:grid;grid-template-columns:26px minmax(0,1fr) 110px 44px;align-items:center;gap:12px;padding:6px 6px;border-radius:8px;cursor:pointer;transition:background .15s}
+.mini-row:hover{background:rgba(255,255,255,.04)}
+.mini-row .mn{font:700 11px var(--mono);color:var(--mc)}
+.mini-row .mt{font:600 12.5px var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mini-row .mc{font:700 10.5px var(--mono);color:var(--dim);text-align:right}
+.prog-actions{display:flex;gap:12px;flex-wrap:wrap}
+
+/* ============ РЕСУРСЫ / СОВЕТЫ ============ */
+.res-sec{padding:60px 0}
+.res-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.res-group{background:var(--surface);border:1px solid var(--line);border-radius:15px;padding:18px;transition:border-color .2s,transform .2s}
+.res-group:hover{border-color:var(--line2);transform:translateY(-3px)}
+.rg-head{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.rg-ic{width:34px;height:34px;border-radius:9px;display:grid;place-items:center}
+.rg-ic svg{width:17px;height:17px}
+.rg-head h3{font:700 13px var(--disp)}
+.rg-links{display:flex;flex-direction:column;gap:2px}
+.rlink{display:flex;align-items:center;gap:8px;padding:8px 8px;border-radius:9px;transition:background .15s}
+.rlink:hover{background:rgba(255,255,255,.045)}
+.rlink .rt{flex:1;min-width:0}
+.rlink b{display:block;font:700 12.5px var(--body)}
+.rlink i{display:block;font:400 10.5px var(--body);font-style:normal;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rlink .arr{width:12px;height:12px;color:var(--dim);flex:none;transition:color .15s,transform .15s}
+.rlink:hover .arr{color:var(--orange2);transform:translate(2px,-2px)}
+.lang{font:700 8.5px var(--mono);font-style:normal;padding:1px 5px;border-radius:4px;border:1px solid var(--line2);color:var(--muted);flex:none}
+.lang.ru{color:var(--green);border-color:rgba(126,222,87,.4)}
+.tips-sec{padding:60px 0 80px}
+.tips-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.tip{position:relative;background:linear-gradient(165deg,var(--surface2),var(--surface));border:1px solid var(--line);border-radius:15px;padding:20px;overflow:hidden;transition:border-color .2s,transform .2s}
+.tip:hover{border-color:rgba(255,122,28,.4);transform:translateY(-3px)}
+.tip .tn{font:900 40px/1 var(--disp);color:transparent;-webkit-text-stroke:1.2px rgba(255,122,28,.5);margin-bottom:12px}
+.tip h3{font:700 14px var(--disp);margin-bottom:9px}
+.tip p{font-size:12.5px;color:var(--muted)}
+.tip .keys{display:flex;flex-wrap:wrap;gap:5px;margin-top:11px}
+
+/* ============ ФУТЕР ============ */
+footer{border-top:1px solid var(--line);padding:34px 0 44px;background:rgba(13,15,19,.6)}
+.foot{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.foot .fb{max-width:420px}
+.foot p{font-size:11.5px;color:var(--dim);margin-top:10px}
+.foot-links{display:flex;gap:16px;font:600 12px var(--body);color:var(--muted)}
+.foot-links a:hover{color:var(--orange2)}
+.up{display:flex;align-items:center;gap:7px;font:700 11px var(--mono);color:var(--muted);border:1px solid var(--line);padding:9px 14px;border-radius:9px;transition:all .15s}
+.up:hover{color:var(--orange2);border-color:var(--orange);transform:translateY(-2px)}
+.up svg{width:13px;height:13px}
+
+/* ============ DRAWER ============ */
+.scrim{position:fixed;inset:0;z-index:80;background:rgba(8,9,12,.62);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:opacity .3s}
+.scrim.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;bottom:0;z-index:90;width:min(460px,100vw);background:#171b23;border-left:1px solid var(--line2);display:flex;flex-direction:column;transform:translateX(103%);transition:transform .34s cubic-bezier(.22,.9,.3,1);box-shadow:-30px 0 80px rgba(0,0,0,.5)}
+.drawer.open{transform:none}
+.d-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.d-mod{font:700 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--mc,var(--orange))}
+.d-close{width:36px;height:36px;display:grid;place-items:center;border:1px solid var(--line);border-radius:9px;color:var(--muted);transition:all .15s}
+.d-close:hover{color:var(--red);border-color:var(--red)}
+.d-close svg{width:16px;height:16px}
+.d-body{flex:1;overflow-y:auto;padding:22px 20px}
+.d-body h3{font:700 20px/1.3 var(--disp);margin-bottom:12px}
+.d-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.d-meta .dm{font:700 10.5px var(--mono);color:var(--muted);border:1px solid var(--line);padding:4px 10px;border-radius:99px}
+.d-desc{color:var(--muted);font-size:14px;margin-bottom:18px}
+.d-keys{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.d-body h4{font:700 11px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);margin-bottom:10px}
+.d-note{font:400 10.5px var(--mono);color:var(--dim);margin:-4px 0 12px}
+.res-list{display:flex;flex-direction:column;gap:8px}
+.res{display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:11px;transition:border-color .15s,transform .15s}
+.res:hover{border-color:var(--line2);transform:translateX(3px)}
+.res-ic{flex:none;width:34px;height:34px;border-radius:9px;display:grid;place-items:center}
+.res-ic svg{width:16px;height:16px}
+.k-v{background:rgba(255,77,97,.13);color:var(--red)}
+.k-a{background:rgba(63,140,255,.13);color:var(--blue)}
+.k-t{background:rgba(126,222,87,.12);color:var(--green)}
+.k-c{background:rgba(255,194,51,.13);color:var(--amber)}
+.res-tx{flex:1;min-width:0}
+.res-tx b{display:block;font:700 13px/1.35 var(--body)}
+.res-tx i{display:flex;align-items:center;gap:6px;font:400 11px var(--body);font-style:normal;color:var(--dim);margin-top:2px}
+.res .arr{width:13px;height:13px;color:var(--dim);flex:none}
+.res:hover .arr{color:var(--orange2)}
+.d-foot{padding:16px 20px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.dbtn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;padding:13px;border-radius:11px;font:800 14px var(--body);background:linear-gradient(120deg,var(--orange),#ff9440);color:#1a1006;transition:all .18s;box-shadow:0 6px 22px rgba(255,122,28,.25)}
+.dbtn svg{width:16px;height:16px}
+.dbtn:hover{filter:brightness(1.07);transform:translateY(-1px)}
+.dbtn.is-done{background:rgba(74,222,128,.12);color:var(--ok);border:1px solid rgba(74,222,128,.45);box-shadow:none}
+.d-nav{display:flex;gap:8px}
+.d-nav button{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:9px;border:1px solid var(--line);border-radius:9px;font:700 11px var(--mono);color:var(--muted);transition:all .15s;min-width:0}
+.d-nav button:hover:not(:disabled){color:var(--orange2);border-color:var(--orange)}
+.d-nav button:disabled{opacity:.35;cursor:not-allowed}
+.d-nav svg{width:12px;height:12px;flex:none}
+
+/* ============ ТОСТЫ ============ */
+.toasts{position:fixed;left:18px;bottom:18px;z-index:120;display:flex;flex-direction:column;gap:10px;max-width:min(400px,calc(100vw - 36px))}
+.toast{position:relative;display:flex;align-items:center;gap:12px;background:var(--overlay);border:1px solid var(--line2);border-radius:12px;padding:13px 15px;font:600 13px var(--body);box-shadow:0 16px 44px rgba(0,0,0,.5);animation:tin .3s cubic-bezier(.2,1.2,.4,1);overflow:hidden}
+.toast.out{animation:tout .25s ease forwards}
+@keyframes tin{from{opacity:0;transform:translateY(16px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes tout{to{opacity:0;transform:translateY(10px) scale(.96)}}
+.toast .dot{flex:none;width:8px;height:8px;border-radius:50%}
+.toast.ok .dot{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.toast.warn .dot{background:var(--warn);box-shadow:0 0 10px var(--warn)}
+.toast.info .dot{background:var(--info);box-shadow:0 0 10px var(--info)}
+.toast .undo{flex:none;font:800 12px var(--mono);color:var(--orange2);padding:5px 10px;border:1px solid rgba(255,122,28,.4);border-radius:7px;transition:background .15s}
+.toast .undo:hover{background:rgba(255,122,28,.12)}
+.toast::after{content:'';position:absolute;left:0;bottom:0;height:2px;background:linear-gradient(90deg,var(--orange),var(--amber));animation:life 6s linear forwards}
+@keyframes life{from{width:100%}to{width:0}}
+
+/* ============ АДАПТИВ ============ */
+@media (max-width:1020px){
+  .hero{grid-template-columns:1fr;gap:38px;padding-top:112px}
+  .res-grid,.tips-grid{grid-template-columns:repeat(2,1fr)}
+  .prog-grid{grid-template-columns:1fr}
+  .ringcard{flex-direction:row;flex-wrap:wrap;justify-content:center}
+}
+@media (max-width:920px){
+  .roadmap::before{left:23px}
+  .mod{grid-template-columns:46px minmax(0,1fr);gap:14px}
+  .mod .node{grid-column:1;width:42px;height:42px}
+  .mod .card,.mod:nth-child(even) .card{grid-column:2}
+  .mod .side{display:none}
+  .toolbar{position:static}
+}
+@media (max-width:860px){
+  .nav-links{display:none}
+  .burger{display:grid}
+}
+@media (max-width:760px){
+  .lrow{grid-template-columns:34px minmax(0,1fr) 56px 24px}
+  .lrow .col-type,.lrow .col-res,.list-head .col-type,.list-head .col-res{display:none}
+  .list-head{grid-template-columns:34px minmax(0,1fr) 56px 24px}
+  .pstats{grid-template-columns:1fr 1fr}
+  .hero-stats{grid-template-columns:repeat(2,1fr);gap:16px}
+}
+@media (max-width:600px){
+  .wrap{padding:0 16px}
+  .res-grid,.tips-grid{grid-template-columns:1fr}
+  .vp-rail{grid-template-columns:repeat(2,1fr)}
+  .vactions{grid-column:1/-1}
+  .cta-text{display:none}
+  .nav{padding:0 14px;gap:12px}
+  .toasts{left:12px;right:12px;max-width:none}
+  .mini-row{grid-template-columns:22px minmax(0,1fr) 70px 38px}
+  .count{margin-left:0;width:100%}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .reveal,.stage{opacity:1;transform:none}
+}
+</style>
+</head>
+<body>
+
+<div class="bg" aria-hidden="true">
+  <div class="bg-grid"></div>
+  <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+  <div class="grain"></div>
+</div>
+
+<!-- НАВИГАЦИЯ -->
+<header class="nav" id="nav">
+  <a class="brand" href="#hero" aria-label="Blender Roadmap — наверх">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 22V12M12 12l9-5M12 12L3 7"/></svg>
+    BLENDER<em>/</em>ROADMAP
+  </a>
+  <nav class="nav-links" aria-label="Разделы">
+    <a href="#map" data-sec="map">Карта</a>
+    <a href="#progress" data-sec="progress">Прогресс</a>
+    <a href="#resources" data-sec="resources">Ресурсы</a>
+    <a href="#tips" data-sec="tips">Советы</a>
+  </nav>
+  <div class="nav-right">
+    <div class="nav-prog" title="Общий прогресс">
+      <svg viewBox="0 0 28 28" aria-hidden="true">
+        <defs><linearGradient id="navGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a1c"/><stop offset="1" stop-color="#ffc233"/></linearGradient></defs>
+        <circle class="tr" cx="14" cy="14" r="10"/><circle class="pr" id="navRing" cx="14" cy="14" r="10"/>
+      </svg>
+      <span id="navPct">0%</span>
+    </div>
+    <button class="btn btn-pri btn-sm" id="ctaContinue">▶ <span class="cta-text">Продолжить</span></button>
+    <button class="burger" id="burger" aria-label="Меню">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</header>
+<div class="mmenu" id="mmenu">
+  <a href="#map">Карта курса</a><a href="#progress">Прогресс</a><a href="#resources">Ресурсы</a><a href="#tips">Советы</a>
+</div>
+
+<main>
+<!-- HERO -->
+<section class="hero wrap" id="hero">
+  <div>
+    <div class="hero-eyebrow stage" style="--d:0ms">Интерактивный роадмап · Blender 4.x<span class="cur"></span></div>
+    <h1 class="stage" style="--d:90ms">Освой <span class="grad">Blender</span><br>от куба до портфолио</h1>
+    <p class="hero-sub stage" style="--d:180ms">Пошаговый план на 14 недель: 9 этапов, 34 урока и живые ссылки на лучшие туториалы. Отмечай пройденное — карта запомнит прогресс прямо в браузере.</p>
+    <div class="hero-stats stage" style="--d:270ms">
+      <div class="hstat"><b id="statMods">0</b><span>этапов</span></div>
+      <div class="hstat"><b id="statLess">0</b><span>уроков</span></div>
+      <div class="hstat"><b id="statHours">0</b><span>часов</span></div>
+      <div class="hstat"><b id="statRes">0</b><span>ссылок</span></div>
+    </div>
+    <div class="hero-cta stage" style="--d:360ms">
+      <button class="btn btn-pri" id="ctaStart">Начать путь →</button>
+      <a class="btn btn-ghost" href="#resources">Библиотека ресурсов</a>
+    </div>
+    <div class="hero-note stage" style="--d:450ms">без регистрации · прогресс в localStorage · только проверенные источники</div>
+  </div>
+
+  <!-- ВЬЮПОРТ -->
+  <div class="vp stage" style="--d:250ms">
+    <div class="vp-head">
+      <span class="l"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 22V12M12 12l9-5M12 12L3 7"/></svg>user_perspective</span>
+      <span>(1) Collection | Torus</span>
+    </div>
+    <div class="vp-stage" id="vpStage">
+      <canvas id="vpCanvas" aria-label="Интерактивный 3D-пончик: тяни мышью, крути колесо"></canvas>
+      <div class="vp-stats" id="vpStats"></div>
+    </div>
+    <div class="vp-hint">ЛКМ — вращение · колесо — зум · клик по гизмо — вид по оси · двойной клик — сброс камеры</div>
+    <div class="vp-rail">
+      <div class="seg" role="group" aria-label="Режим отображения">
+        <button data-mode="wire" class="on">КАРКАС</button>
+        <button data-mode="solid">СОЛИД</button>
+        <button data-mode="xray">X-RAY</button>
+        <button data-mode="points">ТОЧКИ</button>
+      </div>
+      <div class="vcell"><div class="vlabel"><span>Сетка</span><output id="vDensity">24</output></div><input type="range" id="rDensity" min="8" max="40" step="2" value="24" aria-label="Плотность сетки"></div>
+      <div class="vcell"><div class="vlabel"><span>Скорость</span><output id="vSpeed">0.5</output></div><input type="range" id="rSpeed" min="0" max="200" value="50" aria-label="Скорость вращения"></div>
+      <div class="vcell"><div class="vlabel"><span>Свечение</span><output id="vGlow">55%</output></div><input type="range" id="rGlow" min="0" max="100" value="55" aria-label="Свечение"></div>
+      <div class="vcell"><div class="vlabel"><span>Свет</span><output id="vLight">135°</output></div><input type="range" id="rLight" min="0" max="360" value="135" aria-label="Направление света"></div>
+      <div class="vcell"><span class="vlabel">Цвет</span>
+        <div class="swatches">
+          <button class="swatch on" data-color="orange" style="background:#ff7a1c" aria-label="Оранжевый"></button>
+          <button class="swatch" data-color="blue" style="background:#3f8cff" aria-label="Синий"></button>
+          <button class="swatch" data-color="green" style="background:#7ede57" aria-label="Зелёный"></button>
+        </div>
+      </div>
+      <div class="vcell"><span class="vlabel">Опции</span>
+        <label class="switchrow"><span class="switch"><input type="checkbox" id="tGrid" checked><i></i></span>пол</label>
+        <label class="switchrow"><span class="switch"><input type="checkbox" id="tAuto" checked><i></i></span>вращение</label>
+      </div>
+      <div class="vactions">
+        <button class="btn btn-ghost" id="btnResetCam" title="Сбросить камеру"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5" fill="currentColor" stroke="none"/></svg>КАМЕРА</button>
+        <button class="btn btn-ghost" id="btnRandom" title="Случайные параметры"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="3"/><circle cx="9" cy="9" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="15" r="1.4" fill="currentColor" stroke="none"/><circle cx="15" cy="9" r="1.4" fill="currentColor" stroke="none"/><circle cx="9" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg>РАНДОМ</button>
+        <button class="btn btn-ghost" id="btnPng" title="Скачать снимок PNG"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3v12M6 9l6 6 6-6M4 21h16"/></svg>PNG</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- КАРТА -->
+<section class="map-sec wrap" id="map">
+  <div class="sec-head reveal">
+    <div class="eyebrow">Структура курса</div>
+    <h2>Карта курса</h2>
+    <p class="sec-sub">Иди по порядку или прыгай к нужной теме. Клик по уроку — детали и ссылки, галочка — прогресс. ★ — ключевые проекты этапов.</p>
+  </div>
+  <div class="toolbar reveal">
+    <div class="tb-row">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>
+        <input type="search" id="search" placeholder="Поиск урока… ( / )" aria-label="Поиск урока">
+      </div>
+      <div class="viewtog" role="group" aria-label="Вид">
+        <button data-view="map" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="7" height="6" rx="1"/><rect x="14" y="14" width="7" height="6" rx="1"/><path d="M10 7h7v7"/></svg>Карта</button>
+        <button data-view="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg>Список</button>
+      </div>
+    </div>
+    <div class="tb-row">
+      <div class="chips" role="group" aria-label="Тип урока">
+        <button class="chip on" data-type="all">Все</button>
+        <button class="chip" data-type="theory">Теория</button>
+        <button class="chip" data-type="practice">Практика</button>
+        <button class="chip" data-type="project">Проекты</button>
+      </div>
+      <select id="statusSel" aria-label="Статус">
+        <option value="all">Любой статус</option>
+        <option value="todo">Не пройдено</option>
+        <option value="done">Пройдено</option>
+      </select>
+      <select id="sortSel" aria-label="Сортировка" disabled title="Сортировка доступна в виде «Список»">
+        <option value="course">По порядку курса</option>
+        <option value="hoursAsc">Сначала короткие</option>
+        <option value="hoursDesc">Сначала длинные</option>
+        <option value="title">По алфавиту</option>
+      </select>
+      <span class="count" id="countLabel"></span>
+    </div>
+  </div>
+  <div class="roadmap" id="roadmap"></div>
+  <div class="listview hide" id="listView"></div>
+  <div class="empty hide" id="empty">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 22V12M12 12l9-5M12 12L3 7"/></svg>
+    <h3>Ничего не нашлось</h3>
+    <p>Попробуй другой запрос или сбрось фильтры.</p>
+    <button class="btn btn-ghost" id="clearFilters">Сбросить фильтры</button>
+  </div>
+</section>
+
+<!-- ПРОГРЕСС -->
+<section class="prog-sec wrap" id="progress">
+  <div class="sec-head reveal">
+    <div class="eyebrow">Трекер</div>
+    <h2>Твой прогресс</h2>
+    <p class="sec-sub">Всё хранится локально — без аккаунтов и облаков. Задай темп, и карта посчитает дату финиша.</p>
+  </div>
+  <div class="prog-grid">
+    <div class="ringcard reveal">
+      <div class="ringwrap">
+        <svg viewBox="0 0 160 160" aria-hidden="true">
+          <defs><linearGradient id="bigGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a1c"/><stop offset=".6" stop-color="#ffc233"/><stop offset="1" stop-color="#7ede57"/></linearGradient></defs>
+          <circle class="tr" cx="80" cy="80" r="64"/>
+          <circle class="pr" id="bigRing" cx="80" cy="80" r="64" transform="rotate(-90 80 80)"/>
+        </svg>
+        <div class="ringtxt"><div><b id="bigPct">0%</b><span>пройдено</span></div></div>
+      </div>
+      <button class="btn btn-pri" id="btnContinue2">Продолжить обучение →</button>
+      <button class="btn btn-danger btn-sm" id="btnReset" style="width:100%">Сбросить прогресс</button>
+    </div>
+    <div class="prog-right">
+      <div class="pstats reveal" style="--d:80ms">
+        <div class="pstat"><b id="pLess">0 / 34</b><span>уроков пройдено</span></div>
+        <div class="pstat"><b id="pHours">0 ч</b><span>часов позади</span></div>
+        <div class="pstat"><b id="pMods">0 / 9</b><span>этапов закрыто</span></div>
+      </div>
+      <div class="tempocard reveal" style="--d:140ms">
+        <div class="trow"><b>Мой темп</b><output id="tempoVal">9 ч/нед</output></div>
+        <input type="range" id="tempo" min="2" max="20" step="1" value="9" aria-label="Часов в неделю">
+        <div class="finish" id="finishLabel"></div>
+      </div>
+      <div class="mini reveal" style="--d:200ms" id="modMini"></div>
+    </div>
+  </div>
+</section>
+
+<!-- РЕСУРСЫ -->
+<section class="res-sec wrap" id="resources">
+  <div class="sec-head reveal">
+    <div class="eyebrow">Библиотека</div>
+    <h2>Ресурсы</h2>
+    <p class="sec-sub">Проверенные места, куда бежать, когда застрял. Всё открывается в новой вкладке.</p>
+  </div>
+  <div class="res-grid" id="resGrid"></div>
+</section>
+
+<!-- СОВЕТЫ -->
+<section class="tips-sec wrap" id="tips">
+  <div class="sec-head reveal">
+    <div class="eyebrow">Мета-скиллы</div>
+    <h2>Как не слиться</h2>
+    <p class="sec-sub">Четыре правила, которые сэкономят тебе месяцы.</p>
+  </div>
+  <div class="tips-grid">
+    <div class="tip reveal" style="--d:0ms"><div class="tn">01</div><h3>Правило 50/50</h3><p>Половину времени — туториалы, половину — свои модели. Иначе попадёшь в tutorial hell: смотреть умеешь, делать — нет.</p></div>
+    <div class="tip reveal" style="--d:70ms"><div class="tn">02</div><h3>Хоткеи — легальные читы</h3><p>Выучи эти клавиши в первую неделю и ускоришься втрое:</p><div class="keys"><kbd>G</kbd><kbd>R</kbd><kbd>S</kbd><kbd>E</kbd><kbd>I</kbd><kbd>Tab</kbd><kbd>Ctrl+R</kbd><kbd>Shift+A</kbd><kbd>F3</kbd></div></div>
+    <div class="tip reveal" style="--d:140ms"><div class="tn">03</div><h3>Рендерь часто, стыдись редко</h3><p>Законченный кривой рендер учит большему, чем идеальный недодел. Заведи папку daily и складывай туда всё.</p></div>
+    <div class="tip reveal" style="--d:210ms"><div class="tn">04</div><h3>Фидбек — ускоритель</h3><p>Выложи работу на Blender Artists или r/blender: за час тебе укажут на то, что ты сам не заметишь за неделю.</p></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div class="fb">
+      <a class="brand" href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 22V12M12 12l9-5M12 12L3 7"/></svg>BLENDER<em>/</em>ROADMAP</a>
+      <p>Неофициальный учебный план. Blender® — товарный знак Blender Foundation. Прогресс хранится только в твоём браузере.</p>
+    </div>
+    <div class="foot-links">
+      <a href="https://www.blender.org" target="_blank" rel="noopener">blender.org</a>
+      <a href="https://docs.blender.org/manual/en/latest/" target="_blank" rel="noopener">Manual</a>
+      <a href="https://www.blender.org/download/" target="_blank" rel="noopener">Скачать Blender</a>
+    </div>
+    <a class="up" href="#hero"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>НАВЕРХ</a>
+  </div>
+</footer>
+
+<!-- DRAWER -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Детали урока">
+  <div class="d-head">
+    <span class="d-mod" id="dMod"></span>
+    <button class="d-close" id="dClose" aria-label="Закрыть"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+  </div>
+  <div class="d-body" id="dBody"></div>
+  <div class="d-foot">
+    <button class="dbtn" id="dToggle" aria-pressed="false"></button>
+    <div class="d-nav">
+      <button id="dPrev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 6l-6 6 6 6"/></svg>Пред</button>
+      <button id="dNext">След<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></button>
+    </div>
+  </div>
+</aside>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<noscript><div style="position:fixed;inset:0;background:#0d0f13;color:#f4efe7;display:grid;place-items:center;z-index:999;padding:30px;text-align:center">Для интерактивной карты нужен включённый JavaScript.</div></noscript>
+
+<script>
+(function(){
+'use strict';
+/* ================= ДАННЫЕ КУРСА ================= */
+const D='https://docs.blender.org/manual/en/latest/';
+const yt=q=>'https://www.youtube.com/results?search_query='+encodeURIComponent(q);
+const R=(k,t,s,u,l)=>({k,t,s,u,l:l||'EN'});
+const COURSE=[
+{id:'m1',num:1,color:'#ff7a1c',title:'Первый запуск',weeks:'Неделя 1',goal:'Уверенно летаешь по вьюпорту и рендеришь первую сцену.',lessons:[
+ {id:'m1l1',type:'theory',hours:1,title:'Установка и первый запуск',desc:'Ставишь Blender 4.x, выбираешь язык, настраиваешь автосохранение и разбираешься, что где лежит. 15 минут — и ты в игре.',res:[
+   R('a','Скачать Blender','blender.org','https://www.blender.org/download/'),
+   R('v','Установка Blender с нуля','VideoSmile',yt('VideoSmile Blender установка первый запуск'),'RU'),
+   R('a','Справочник: интерфейс','Blender Manual',D+'interface/index.html')]},
+ {id:'m1l2',type:'practice',hours:2,title:'Навигация во вьюпорте',desc:'Вращение, панорама, зум, виды с нампада. Доведи движения до автоматизма — дальше всё строится на них.',keys:['MMB','Shift+MMB','Numpad 1/3/7'],res:[
+   R('v','Blender Fundamentals: Viewport Navigation','Blender Official',yt('blender fundamentals viewport navigation')),
+   R('a','Редактор 3D-вьюпорта','Blender Manual',D+'editors/3dview/index.html')]},
+ {id:'m1l3',type:'practice',hours:3,title:'Объекты и трансформации',desc:'G, R, S — три кита Blender. Перемещай, вращай, масштабируй и раскладывай объекты по коллекциям.',keys:['G','R','S','Tab'],res:[
+   R('v','Blender Fundamentals: Objects & Transforms','Blender Official',yt('blender fundamentals objects transformations')),
+   R('a','Сцены и объекты','Blender Manual',D+'scene_layout/index.html')]},
+ {id:'m1l4',type:'project',hours:3,title:'Мини-проект: пончик, часть 1',desc:'Легендарный донат Blender Guru. Собери базовую сцену: пончик, свет, камера — и получи первый рендер.',res:[
+   R('v','Donut Tutorial 4.0 — Part 1','Blender Guru',yt('blender guru donut tutorial 4.0 part 1')),
+   R('v','Пончик в Blender — урок 1','Денис Кожар',yt('Денис Кожар пончик blender урок 1'),'RU'),
+   R('a','Официальные туториалы Blender','blender.org','https://www.blender.org/support/tutorials/')]}
+]},
+{id:'m2',num:2,color:'#3f8cff',title:'Полигональное моделирование',weeks:'Недели 2–3',goal:'Моделируешь чистую low-poly геометрию без паники.',lessons:[
+ {id:'m2l1',type:'theory',hours:2,title:'Анатомия меша',desc:'Вершины, рёбра, полигоны и нормали. Почему модель — это оболочка, а не монолит, и что на самом деле видит рендер.',res:[
+   R('a','Структура меша','Blender Manual',D+'modeling/meshes/structure.html'),
+   R('v','Get Good at Blender: Edit Mode Basics','Grant Abbitt',yt('grant abbitt get good at blender edit mode'))]},
+ {id:'m2l2',type:'practice',hours:4,title:'Extrude, Inset, Bevel, Loop Cut',desc:'Четыре операции, которыми делается 80% моделей. Гоняй их на кубе, пока пальцы сами не находят клавиши.',keys:['E','I','Ctrl+B','Ctrl+R'],res:[
+   R('v','Blender 4 Beginners: Edit Mode Tools','Grant Abbitt',yt('grant abbitt blender 4 beginner edit mode tools')),
+   R('a','Инструменты меша','Blender Manual',D+'modeling/meshes/index.html')]},
+ {id:'m2l3',type:'theory',hours:3,title:'Топология: квады и edge flow',desc:'Почему квады лучше треугольников, как сетка течёт по форме и где прячутся артефакты сабдива.',res:[
+   R('v','Topology explained for beginners','Grant Abbitt',yt('blender topology for beginners grant abbitt')),
+   R('c','Разборы топологии на форуме','Blender Artists','https://blenderartists.org')]},
+ {id:'m2l4',type:'project',hours:5,title:'Практика: low-poly улица',desc:'Собери из кубов домик, деревья и фонарь в изометрии. Чистая сетка, плоские цвета — и первый кадр в копилку.',res:[
+   R('v','Low Poly House tutorial','Polygon Runway',yt('polygon runway low poly house blender')),
+   R('a','Гайды и кисти Polygon Runway','polygonrunway.com','https://polygonrunway.com')]}
+]},
+{id:'m3',num:3,color:'#7ede57',title:'Модификаторы и hard-surface',weeks:'Неделя 4',goal:'Собираешь сложные формы стеком модификаторов.',lessons:[
+ {id:'m3l1',type:'theory',hours:3,title:'Стек модификаторов',desc:'Subdivision, Mirror, Array — неразрушающая магия. Порядок модификаторов в стеке решает всё.',res:[
+   R('a','Все модификаторы','Blender Manual',D+'modeling/modifiers/index.html'),
+   R('v','Modifiers explained','Default Cube',yt('default cube blender modifiers explained'))]},
+ {id:'m3l2',type:'practice',hours:4,title:'Boolean + Bevel: hard-surface',desc:'Вырезай формы булевыми операциями и скругляй кромки. Главная техника sci-fi коробок и гаджетов.',keys:['Ctrl+B'],res:[
+   R('v','Boolean workflow in Blender','YouTube',yt('blender hard surface boolean bevel workflow tutorial')),
+   R('a','Модификатор Boolean','Blender Manual',D+'modeling/modifiers/generate/boolean.html')]},
+ {id:'m3l3',type:'practice',hours:3,title:'Кривые и текст',desc:'Bezier-кривые, экструзия профиля, 3D-текст и логотипы. Случаи, когда полигоны вообще не нужны.',res:[
+   R('a','Кривые','Blender Manual',D+'modeling/curves/index.html'),
+   R('v','Blender curves tutorial','YouTube',yt('blender curves tutorial for beginners'))]},
+ {id:'m3l4',type:'project',hours:5,title:'Практика: sci-fi контейнер',desc:'Панели, болты, скосы, потёртые кромки. Собери контейнер, который не стыдно поставить в кадр.',res:[
+   R('v','Sci-fi crate tutorial','Grant Abbitt',yt('grant abbitt sci fi crate blender tutorial')),
+   R('a','Модификатор Bevel','Blender Manual',D+'modeling/modifiers/generate/bevel.html')]}
+]},
+{id:'m4',num:4,color:'#ff4d61',title:'UV, материалы, текстуры',weeks:'Недели 5–6',goal:'Разворачиваешь и красишь модель как профи.',lessons:[
+ {id:'m4l1',type:'practice',hours:4,title:'UV-развёртка и швы',desc:'Разрезаешь модель по швам и раскладываешь на плоскости. Где прятать швы и как избежать растяжений.',keys:['U','Ctrl+E'],res:[
+   R('v','UV Unwrapping for beginners','YouTube',yt('blender uv unwrapping tutorial for beginners')),
+   R('a','UV-редактор','Blender Manual',D+'editors/uv/index.html')]},
+ {id:'m4l2',type:'theory',hours:3,title:'PBR и ноды шейдеров',desc:'Base Color, Metallic, Roughness — физика материалов на пальцах. Собираешь первый нодовый граф.',res:[
+   R('a','Введение в шейдер-ноды','Blender Manual',D+'render/shader_nodes/introduction.html'),
+   R('v','Shader nodes for absolute beginners','YouTube',yt('blender shader nodes beginner tutorial'))]},
+ {id:'m4l3',type:'practice',hours:4,title:'Процедурные материалы',desc:'Noise, Voronoi и Color Ramp вместо текстур: бесконечные материалы без единой картинки.',res:[
+   R('v','Procedural materials','Ducky 3D',yt('ducky 3d procedural material blender tutorial')),
+   R('a','Principled BSDF','Blender Manual',D+'render/shader_nodes/shader/principled.html')]},
+ {id:'m4l4',type:'practice',hours:3,title:'Готовые текстуры и texture paint',desc:'Подключаешь PBR-наборы, рисуешь поверх кистью и добавляешь уникальные детали.',res:[
+   R('t','Бесплатные PBR-материалы','ambientCG','https://ambientcg.com'),
+   R('t','Текстуры, HDRI, модели','Poly Haven','https://polyhaven.com'),
+   R('v','Texture painting basics','YouTube',yt('blender texture painting tutorial basics'))]}
+]},
+{id:'m5',num:5,color:'#ff7a1c',title:'Свет, камера, рендер',weeks:'Неделя 7',goal:'Делаешь кадр, который не стыдно показать людям.',lessons:[
+ {id:'m5l1',type:'theory',hours:2,title:'EEVEE против Cycles',desc:'Реалтайм против path tracing: когда какой движок, что такое сэмплы и почему Cycles шумит.',res:[
+   R('a','EEVEE','Blender Manual',D+'render/eevee/index.html'),
+   R('a','Cycles','Blender Manual',D+'render/cycles/index.html')]},
+ {id:'m5l2',type:'practice',hours:4,title:'Схемы света и HDRI',desc:'Three-point lighting, HDRI-окружение и цветовой контраст. Свет делает 70% картинки.',res:[
+   R('a','Источники света','Blender Manual',D+'render/lights/index.html'),
+   R('t','Бесплатные HDRI','Poly Haven','https://polyhaven.com/hdris'),
+   R('v','Three point lighting tutorial','YouTube',yt('blender three point lighting tutorial'))]},
+ {id:'m5l3',type:'practice',hours:3,title:'Камера и композиция',desc:'Фокусное расстояние, правило третей, глубина резкости. Ставишь камеру как оператор.',res:[
+   R('a','Камеры','Blender Manual',D+'render/cameras.html'),
+   R('v','Camera composition tips','YouTube',yt('blender camera composition tips tutorial'))]},
+ {id:'m5l4',type:'project',hours:5,title:'Практика: финальный рендер пропса',desc:'Доводишь sci-fi контейнер до портфолио-кадра: свет, фон, DoF и чистый рендер без шума.',res:[
+   R('v','Improve your renders','Blender Guru',yt('blender guru how to make renders look better')),
+   R('a','Рендеринг: справочник','Blender Manual',D+'render/index.html')]}
+]},
+{id:'m6',num:6,color:'#3f8cff',title:'Скульптинг и органика',weeks:'Недели 8–9',goal:'Лепишь органику и возвращаешь её в чистую сетку.',lessons:[
+ {id:'m6l1',type:'practice',hours:4,title:'Скульптинг: кисти и Dynotopo',desc:'Draw, Grab, Crease и динамическая топология. Лепишь как из глины — сетка нарастает сама.',keys:['F','Shift'],res:[
+   R('a','Введение в скульптинг','Blender Manual',D+'sculpt_paint/sculpting/introduction.html'),
+   R('v','Sculpting for beginners','Grant Abbitt',yt('grant abbitt blender sculpting beginner tutorial'))]},
+ {id:'m6l2',type:'practice',hours:5,title:'Блокинг стилизованного персонажа',desc:'Большие формы прежде деталей: голова, силуэт, пропорции. Стилизация прощает многое, кроме кривого силуэта.',res:[
+   R('v','Stylized character sculpt','Grant Abbitt',yt('grant abbitt stylized character blender sculpt')),
+   R('a','Скульптинг и покраска','Blender Manual',D+'sculpt_paint/index.html')]},
+ {id:'m6l3',type:'practice',hours:4,title:'Ретопология',desc:'Превращаешь миллионы полигонов скульпт-меша в чистую анимируемую сетку. Медитативно, честно.',res:[
+   R('v','Retopology tutorial','YouTube',yt('blender retopology tutorial for beginners')),
+   R('c','Вопросы по ретопологии','Blender Stack Exchange','https://blender.stackexchange.com/search?q=retopology')]},
+ {id:'m6l4',type:'project',hours:6,title:'Практика: существо в портфолио',desc:'Скульпт → ретоп → материалы → рендер. Полный пайплайн органики на одной модели.',res:[
+   R('v','Creature sculpt workflow','YouTube',yt('blender creature sculpting workflow timelapse')),
+   R('t','Референсы и 3D-модели','Sketchfab','https://sketchfab.com')]}
+]},
+{id:'m7',num:7,color:'#7ede57',title:'Анимация и риггинг',weeks:'Недели 10–11',goal:'Оживляешь модели: ключи, кости, веса.',lessons:[
+ {id:'m7l1',type:'practice',hours:3,title:'Ключевые кадры и Graph Editor',desc:'Timeline, ключи, интерполяция и кривые. Почему easeInOut оживляет, а linear убивает.',keys:['I','Space'],res:[
+   R('a','Ключевые кадры','Blender Manual',D+'animation/keyframes/index.html'),
+   R('v','Blender Fundamentals: Animation','Blender Official',yt('blender fundamentals animation keyframes'))]},
+ {id:'m7l2',type:'theory',hours:4,title:'Арматы и скиннинг',desc:'Кости, иерархия, привязка меша. Как скелет управляет геометрией и что такое vertex groups.',res:[
+   R('a','Арматы','Blender Manual',D+'animation/armatures/index.html'),
+   R('v','Rigging for beginners','YouTube',yt('blender rigging tutorial for beginners armature'))]},
+ {id:'m7l3',type:'practice',hours:4,title:'Weight paint',desc:'Красишь влияние костей и лечишь кривые сгибы. Плавные градиенты вместо дёрганых локтей.',keys:['Ctrl+Tab'],res:[
+   R('a','Weight Paint','Blender Manual',D+'sculpt_paint/weight_paint/index.html'),
+   R('v','Weight painting explained','YouTube',yt('blender weight painting tutorial explained'))]},
+ {id:'m7l4',type:'project',hours:4,title:'Практика: turntable и bounce',desc:'Классика портфолио: вращающийся пропс и прыгающий мячик с overshoot. Анимация, которую приятно пересматривать.',res:[
+   R('v','Turntable animation','YouTube',yt('blender turntable animation tutorial')),
+   R('a','Анимация: справочник','Blender Manual',D+'animation/index.html')]}
+]},
+{id:'m8',num:8,color:'#ff4d61',title:'Geometry Nodes и физика',weeks:'Неделя 12',goal:'Строишь процедурные сцены и укрощаешь физику.',lessons:[
+ {id:'m8l1',type:'practice',hours:4,title:'Geometry Nodes: первые деревья',desc:'Нодовое моделирование: разбросать камни по поверхности, вырастить лес, собрать параметрический забор.',res:[
+   R('a','Geometry Nodes','Blender Manual',D+'modeling/geometry_nodes/index.html'),
+   R('v','Geometry Nodes for beginners','Default Cube',yt('default cube geometry nodes beginner tutorial'))]},
+ {id:'m8l2',type:'practice',hours:4,title:'Физика: rigid body и cloth',desc:'Разрушаемая стена, скатерть на столе, дождь из кубов. Сим-кэш и почему всё взрывается.',res:[
+   R('a','Физика','Blender Manual',D+'physics/index.html'),
+   R('v','Physics simulations basics','YouTube',yt('blender rigid body cloth simulation tutorial beginner'))]},
+ {id:'m8l3',type:'practice',hours:3,title:'Композитинг',desc:'Glare, color balance, виньетка и denoise прямо в Blender. Финальные 10% крутости кадра.',res:[
+   R('a','Композитинг','Blender Manual',D+'compositing/index.html'),
+   R('v','Compositor tutorial','YouTube',yt('blender compositor tutorial glare color grading'))]}
+]},
+{id:'m9',num:9,color:'#ffc233',title:'Портфолио и специализация',weeks:'Недели 13–14',goal:'Публикуешь первую серьёзную работу и выбираешь путь.',lessons:[
+ {id:'m9l1',type:'theory',hours:2,title:'Выбор специализации',desc:'Gamedev, motion design, archviz, персонажи или environment art. Куда расти и что качать дальше.',res:[
+   R('v','3D career paths','YouTube',yt('3d artist career paths blender gamedev motion design')),
+   R('c','Сообщество r/blender','Reddit','https://www.reddit.com/r/blender/')]},
+ {id:'m9l2',type:'practice',hours:3,title:'ArtStation и Sketchfab',desc:'Оформляешь кейс: beauty-рендер, wireframe, breakdown. Работа без презентации — наполовину не работа.',res:[
+   R('t','Портфолио 3D-художников','ArtStation','https://www.artstation.com'),
+   R('t','Публикация 3D в браузере','Sketchfab','https://sketchfab.com'),
+   R('v','Portfolio presentation tips','YouTube',yt('3d artist portfolio artstation presentation tips'))]},
+ {id:'m9l3',type:'project',hours:12,title:'Финальный проект: законченная сцена',desc:'Полный цикл без туториала: идея → блокинг → детали → материалы → свет → рендер → публикация и фидбек.',res:[
+   R('c','Фидбек на форуме','Blender Artists','https://blenderartists.org'),
+   R('t','HDRI и текстуры для сцены','Poly Haven','https://polyhaven.com'),
+   R('a','Новости и разборы','Blender Nation','https://www.blendernation.com')]}
+]}];
+const LESSONS=[];COURSE.forEach(m=>{m.hours=m.lessons.reduce((s,l)=>s+l.hours,0);m.lessons.forEach(l=>LESSONS.push({l,m,idx:LESSONS.length}));});
+const TOTAL_H=LESSONS.reduce((s,x)=>s+x.l.hours,0);
+const TOTAL_RES=LESSONS.reduce((s,x)=>s+x.l.res.length,0);
+const TYPE_NAME={theory:'теория',practice:'практика',project:'проект'};
+
+/* ================= УТИЛИТЫ / СОСТОЯНИЕ ================= */
+const $=id=>document.getElementById(id);
+const $$=s=>Array.from(document.querySelectorAll(s));
+const REDUCED=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const DKEY='bmap.done.v1',TKEY='bmap.tempo.v1',UKEY='bmap.ui.v1';
+let done=new Set();
+try{const raw=JSON.parse(localStorage.getItem(DKEY)||'[]');if(Array.isArray(raw))done=new Set(raw.filter(id=>LESSONS.some(x=>x.l.id===id)));}catch(e){}
+const state={q:'',type:'all',status:'all',view:'map',sort:'course',tempo:9};
+try{const t=parseInt(localStorage.getItem(TKEY));if(t>=2&&t<=20)state.tempo=t;}catch(e){}
+try{const u=JSON.parse(localStorage.getItem(UKEY)||'{}');if(u.view==='list')state.view='list';if(['all','theory','practice','project'].includes(u.type))state.type=u.type;if(['all','todo','done'].includes(u.status))state.status=u.status;if(['course','hoursAsc','hoursDesc','title'].includes(u.sort))state.sort=u.sort;}catch(e){}
+const save=()=>{try{localStorage.setItem(DKEY,JSON.stringify([...done]));}catch(e){}};
+const saveUI=()=>{try{localStorage.setItem(UKEY,JSON.stringify({view:state.view,type:state.type,status:state.status,sort:state.sort}));}catch(e){}};
+const plural=(n,f)=>{n=Math.abs(n)%100;const d=n%10;if(n>10&&n<20)return f[2];if(d>1&&d<5)return f[1];if(d===1)return f[0];return f[2];};
+const IC={
+ tick:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 7"/></svg>',
+ chev:'<svg class="l-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>',
+ v:'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>',
+ a:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></svg>',
+ t:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M12 22V12M12 12l9-5M12 12L3 7"/></svg>',
+ c:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M4 5h16v10H9l-5 4z"/></svg>',
+ arr:'<svg class="arr" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7M9 7h8v8"/></svg>'};
+const KIND_NAME={v:'Видео',a:'Статья',t:'Инструмент',c:'Комьюнити'};
+
+/* ================= ТОСТЫ ================= */
+function toast(msg,kind,action){
+ const box=$('toasts');while(box.children.length>=3)box.firstChild.remove();
+ const t=document.createElement('div');t.className='toast '+(kind||'info');
+ t.innerHTML='<span class="dot"></span><span style="flex:1">'+msg+'</span>';
+ let killed=false;const kill=()=>{if(killed)return;killed=true;t.classList.add('out');setTimeout(()=>t.remove(),260);};
+ if(action){const b=document.createElement('button');b.className='undo';b.textContent=action.label;b.onclick=()=>{action.fn();kill();};t.appendChild(b);}
+ box.appendChild(t);setTimeout(kill,6000);
+}
+
+/* ================= ПОСТРОЕНИЕ КАРТЫ ================= */
+const mapRows={},modEls={},modBars={},modCnts={},modNodes={},modBulks={},miniBars={},miniCnts={};
+function buildMap(){
+ const rm=$('roadmap');
+ COURSE.forEach((m,mi)=>{
+  const art=document.createElement('article');
+  art.className='mod reveal';art.id='mod-'+m.id;art.style.setProperty('--mc',m.color);art.style.setProperty('--d',(mi%2)*80+'ms');
+  const lessonsHtml=m.lessons.map(l=>
+   '<li class="lesson'+(l.type==='project'?' project':'')+'" data-id="'+l.id+'" tabindex="0" role="button" aria-label="'+l.title+'">'+
+   '<button class="check" aria-pressed="false" aria-label="Отметить: '+l.title+'">'+IC.tick+'</button>'+
+   '<div class="l-main"><div class="l-title">'+l.title+'</div>'+
+   '<div class="l-meta"><i class="tt tt-'+l.type+'">'+TYPE_NAME[l.type]+'</i><span>'+l.hours+' ч</span><span>'+l.res.length+' '+plural(l.res.length,['ссылка','ссылки','ссылок'])+'</span><span class="next-chip">дальше ▸</span></div></div>'+IC.chev+'</li>').join('');
+  art.innerHTML=
+   '<div class="node">'+String(m.num).padStart(2,'0')+'</div>'+
+   '<div class="card"><div class="mod-badge"><span>Этап '+String(m.num).padStart(2,'0')+' · '+m.weeks+'</span><span class="hrs">≈ '+m.hours+' ч</span></div>'+
+   '<h3>'+m.title+'</h3><p class="mod-goal">'+m.goal+'</p>'+
+   '<div class="mod-prog"><div class="bar"><i></i></div><span class="cnt">0/'+m.lessons.length+'</span></div>'+
+   '<ul class="lessons">'+lessonsHtml+'</ul>'+
+   '<div class="mod-foot"><span class="hint">клик по уроку — детали и ссылки</span><button class="bulk" data-mod="'+m.id+'">Отметить этап ✓</button></div></div>'+
+   '<div class="side"><div class="gnum">'+String(m.num).padStart(2,'0')+'</div><div class="gweek">'+m.weeks+'</div><div class="ghours">≈ '+m.hours+' часов · '+m.lessons.length+' '+plural(m.lessons.length,['урок','урока','уроков'])+'</div></div>';
+  rm.appendChild(art);
+  modEls[m.id]=art;modBars[m.id]=art.querySelector('.bar i');modCnts[m.id]=art.querySelector('.cnt');
+  modNodes[m.id]=art.querySelector('.node');modBulks[m.id]=art.querySelector('.bulk');
+  m.lessons.forEach(l=>{mapRows[l.id]=art.querySelector('[data-id="'+l.id+'"]');});
+ });
+ rm.addEventListener('click',e=>{
+  const bulk=e.target.closest('.bulk');if(bulk){bulkModule(bulk.dataset.mod);return;}
+  const chk=e.target.closest('.check');if(chk){toggleDone(chk.closest('.lesson').dataset.id);return;}
+  const row=e.target.closest('.lesson');if(row)openDrawer(row.dataset.id);
+ });
+ rm.addEventListener('keydown',e=>{
+  if(e.key==='Enter'||e.key===' '){const row=e.target.closest('.lesson');if(row&&e.target===row){e.preventDefault();openDrawer(row.dataset.id);}}
+ });
+}
+function buildMini(){
+ const box=$('modMini');
+ COURSE.forEach(m=>{
+  const r=document.createElement('div');r.className='mini-row';r.style.setProperty('--mc',m.color);r.setAttribute('role','button');r.tabIndex=0;
+  r.innerHTML='<span class="mn">'+String(m.num).padStart(2,'0')+'</span><span class="mt">'+m.title+'</span><div class="bar"><i></i></div><span class="mc">0/'+m.lessons.length+'</span>';
+  const go=()=>{const el=modEls[m.id];el.scrollIntoView({behavior:REDUCED?'auto':'smooth',block:'center'});};
+  r.addEventListener('click',go);r.addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+  box.appendChild(r);miniBars[m.id]=r.querySelector('.bar i');miniCnts[m.id]=r.querySelector('.mc');
+ });
+}
+
+/* ================= ФИЛЬТРЫ / СПИСОК ================= */
+function matches(l,m){
+ if(state.type!=='all'&&l.type!==state.type)return false;
+ const dn=done.has(l.id);
+ if(state.status==='todo'&&dn)return false;
+ if(state.status==='done'&&!dn)return false;
+ if(state.q){const hay=(l.title+' '+l.desc+' '+m.title+' '+l.res.map(r=>r.t+' '+r.s).join(' ')).toLowerCase();if(!hay.includes(state.q))return false;}
+ return true;
+}
+function renderList(){
+ let arr=LESSONS.filter(x=>matches(x.l,x.m));
+ if(state.sort==='hoursAsc')arr=[...arr].sort((a,b)=>a.l.hours-b.l.hours);
+ else if(state.sort==='hoursDesc')arr=[...arr].sort((a,b)=>b.l.hours-a.l.hours);
+ else if(state.sort==='title')arr=[...arr].sort((a,b)=>a.l.title.localeCompare(b.l.title,'ru'));
+ $('listView').innerHTML='<div class="list-head"><span></span><span>Урок</span><span class="col-type">Тип</span><span>Часы</span><span class="col-res">Материалы</span><span></span></div>'+
+ arr.map(x=>{const l=x.l,m=x.m;return '<div class="lrow'+(done.has(l.id)?' done':'')+'" data-id="'+l.id+'" style="--mc:'+m.color+'" tabindex="0" role="button">'+
+  '<button class="check" aria-pressed="'+done.has(l.id)+'" aria-label="Отметить: '+l.title+'">'+IC.tick+'</button>'+
+  '<div class="l-main"><div class="l-title">'+(l.type==='project'?'★ ':'')+l.title+'</div><div class="lmod">Этап '+m.num+' · '+m.title+'</div></div>'+
+  '<span class="col-type"><i class="tt tt-'+l.type+'">'+TYPE_NAME[l.type]+'</i></span><span class="lh">'+l.hours+' ч</span>'+
+  '<span class="lr col-res">'+l.res.length+' '+plural(l.res.length,['ссылка','ссылки','ссылок'])+'</span>'+IC.chev+'</div>';}).join('');
+}
+$('listView').addEventListener('click',e=>{
+ const chk=e.target.closest('.check');if(chk){toggleDone(chk.closest('.lrow').dataset.id);return;}
+ const row=e.target.closest('.lrow');if(row)openDrawer(row.dataset.id);
+});
+$('listView').addEventListener('keydown',e=>{
+ if(e.key==='Enter'){const row=e.target.closest('.lrow');if(row&&e.target===row)openDrawer(row.dataset.id);}
+});
+function applyFilters(){
+ let shown=0;
+ COURSE.forEach(m=>{let vis=0;m.lessons.forEach(l=>{const ok=matches(l,m);mapRows[l.id].classList.toggle('hide',!ok);if(ok)vis++;});modEls[m.id].classList.toggle('hide',vis===0);shown+=vis;});
+ $('countLabel').textContent=shown+' / '+LESSONS.length+' '+plural(LESSONS.length,['урок','урока','уроков']);
+ $('empty').classList.toggle('hide',shown>0);
+ $('roadmap').classList.toggle('hide',state.view!=='map'||shown===0);
+ $('listView').classList.toggle('hide',state.view!=='list'||shown===0);
+ if(state.view==='list')renderList();
+}
+
+/* ================= ОБНОВЛЕНИЕ СОСТОЯНИЯ ================= */
+let nextRow=null,drawerId=null;
+function refresh(){
+ const dc=done.size,dh=LESSONS.reduce((s,x)=>s+(done.has(x.l.id)?x.l.hours:0),0);
+ const pct=dc/LESSONS.length;
+ $('navRing').style.strokeDashoffset=(62.83*(1-pct)).toFixed(2);
+ $('navPct').textContent=Math.round(pct*100)+'%';
+ $('bigRing').style.strokeDashoffset=(402.12*(1-pct)).toFixed(2);
+ $('bigPct').textContent=Math.round(pct*100)+'%';
+ let cm=0;
+ COURSE.forEach(m=>{
+  const d=m.lessons.filter(l=>done.has(l.id)).length,full=d===m.lessons.length;if(full)cm++;
+  const w=(d/m.lessons.length*100)+'%';
+  modBars[m.id].style.width=w;miniBars[m.id].style.width=w;
+  modCnts[m.id].textContent=d+'/'+m.lessons.length;miniCnts[m.id].textContent=d+'/'+m.lessons.length;
+  modEls[m.id].classList.toggle('complete',full);
+  modNodes[m.id].innerHTML=full?IC.tick:String(m.num).padStart(2,'0');
+  modBulks[m.id].textContent=full?'Сбросить этап':'Отметить этап ✓';
+ });
+ $('pLess').textContent=dc+' / '+LESSONS.length;
+ $('pHours').textContent=dh+' / '+TOTAL_H+' ч';
+ $('pMods').textContent=cm+' / '+COURSE.length;
+ LESSONS.forEach(x=>{const r=mapRows[x.l.id],dn=done.has(x.l.id);r.classList.toggle('done',dn);r.querySelector('.check').setAttribute('aria-pressed',dn);});
+ if(nextRow)nextRow.classList.remove('next');
+ const nx=LESSONS.find(x=>!done.has(x.l.id));
+ nextRow=nx?mapRows[nx.l.id]:null;
+ if(nextRow)nextRow.classList.add('next');
+ $('ctaContinue').title=nx?('Следующий урок: '+nx.l.title):'Курс пройден полностью';
+ updateFinish(dh);
+ if(drawerId)syncDrawerToggle();
+ applyFilters();
+}
+function toggleDone(id,silent){
+ const was=done.has(id);was?done.delete(id):done.add(id);save();refresh();
+ if(!silent&&!was){
+  const m=COURSE.find(m=>m.lessons.some(l=>l.id===id));
+  if(m.lessons.every(l=>done.has(l.id))){
+   if(done.size===LESSONS.length)toast('Курс закрыт полностью. Портфолио ждёт 🏆','ok');
+   else toast('Этап '+m.num+' завершён — дальше больше','ok');
+  }
+ }
+}
+function bulkModule(mid){
+ const m=COURSE.find(m=>m.id===mid),snap=new Set(done);
+ const all=m.lessons.every(l=>done.has(l.id));
+ m.lessons.forEach(l=>all?done.delete(l.id):done.add(l.id));
+ save();refresh();
+ toast(all?('Этап '+m.num+' сброшен'):('Этап '+m.num+' закрыт 🔥'),all?'warn':'ok',{label:'Вернуть',fn(){done=snap;save();refresh();}});
+}
+function resetAll(){
+ if(!done.size){toast('Прогресс и так пуст','info');return;}
+ const snap=new Set(done);done=new Set();save();refresh();
+ toast('Прогресс сброшен — '+LESSONS.length+' '+plural(LESSONS.length,['урок','урока','уроков'])+' снова ждут','warn',{label:'Вернуть',fn(){done=snap;save();refresh();}});
+}
+function updateFinish(dh){
+ const rem=TOTAL_H-(dh===undefined?LESSONS.reduce((s,x)=>s+(done.has(x.l.id)?x.l.hours:0),0):dh);
+ const el=$('finishLabel');
+ if(rem<=0){el.textContent='Всё пройдено — можно брать заказы 🏆';return;}
+ const weeks=Math.max(1,Math.ceil(rem/state.tempo));
+ const d=new Date(Date.now()+weeks*7*864e5);
+ const fmt=new Intl.DateTimeFormat('ru-RU',{day:'numeric',month:'long',year:'numeric'});
+ el.textContent='Финиш ≈ '+fmt.format(d)+' · осталось '+rem+' ч (~'+weeks+' нед)';
+}
+function continueLearning(){
+ const nx=LESSONS.find(x=>!done.has(x.l.id));
+ if(!nx){$('progress').scrollIntoView({behavior:REDUCED?'auto':'smooth'});toast('Всё пройдено — снимай сливки 🏆','ok');return;}
+ openDrawer(nx.l.id);
+}
+
+/* ================= DRAWER ================= */
+const drawer=$('drawer'),scrim=$('scrim');
+function openDrawer(id){
+ const x=LESSONS.find(x=>x.l.id===id);if(!x)return;
+ drawerId=id;const l=x.l,m=x.m;
+ drawer.style.setProperty('--mc',m.color);
+ $('dMod').textContent='Этап '+String(m.num).padStart(2,'0')+' · '+m.title+' · '+m.weeks;
+ $('dBody').innerHTML='<h3>'+l.title+'</h3>'+
+  '<div class="d-meta"><span class="dm"><i class="tt tt-'+l.type+'" style="margin-right:4px">'+TYPE_NAME[l.type]+'</i></span><span class="dm">≈ '+l.hours+' ч</span><span class="dm">урок '+(x.idx+1)+' / '+LESSONS.length+'</span></div>'+
+  '<p class="d-desc">'+l.desc+'</p>'+
+  (l.keys?'<div class="d-keys">'+l.keys.map(k=>'<kbd>'+k+'</kbd>').join('')+'</div>':'')+
+  '<h4>Материалы урока</h4><p class="d-note">видео-ссылки ведут на точный запрос YouTube — так они не протухают</p>'+
+  '<div class="res-list">'+l.res.map(r=>'<a class="res" href="'+r.u+'" target="_blank" rel="noopener"><span class="res-ic k-'+r.k+'">'+IC[r.k]+'</span><span class="res-tx"><b>'+r.t+'</b><i>'+KIND_NAME[r.k]+' · '+r.s+' <em class="lang'+(r.l==='RU'?' ru':'')+'">'+r.l+'</em></i></span>'+IC.arr+'</a>').join('')+'</div>';
+ $('dPrev').disabled=x.idx===0;
+ $('dNext').disabled=x.idx===LESSONS.length-1;
+ syncDrawerToggle();
+ scrim.classList.add('open');drawer.classList.add('open');document.body.classList.add('lock');
+ $('dClose').focus();
+}
+function closeDrawer(){
+ drawerId=null;scrim.classList.remove('open');drawer.classList.remove('open');document.body.classList.remove('lock');
+}
+function drawerNav(d){
+ if(!drawerId)return;
+ const i=LESSONS.findIndex(x=>x.l.id===drawerId)+d;
+ if(i>=0&&i<LESSONS.length)openDrawer(LESSONS[i].l.id);
+}
+function syncDrawerToggle(){
+ const dn=done.has(drawerId),b=$('dToggle');
+ b.className='dbtn'+(dn?' is-done':'');b.setAttribute('aria-pressed',dn);
+ b.innerHTML=IC.tick+(dn?' Пройдено — отменить':' Отметить пройденным');
+}
+$('dClose').onclick=closeDrawer;scrim.onclick=closeDrawer;
+$('dToggle').onclick=()=>{if(drawerId)toggleDone(drawerId);};
+$('dPrev').onclick=()=>drawerNav(-1);
+$('dNext').onclick=()=>drawerNav(1);
+drawer.addEventListener('keydown',e=>{
+ if(e.key!=='Tab')return;
+ const f=Array.from(drawer.querySelectorAll('button:not(:disabled),a[href]')).filter(el=>el.offsetParent!==null);
+ if(!f.length)return;
+ const first=f[0],last=f[f.length-1];
+ if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+ else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+});
+
+/* ================= ТУЛБАР ================= */
+let searchT=null;
+$('search').addEventListener('input',e=>{clearTimeout(searchT);searchT=setTimeout(()=>{state.q=e.target.value.trim().toLowerCase();applyFilters();},120);});
+$$('.chip').forEach(c=>c.onclick=()=>{state.type=c.dataset.type;$$('.chip').forEach(x=>x.classList.toggle('on',x===c));saveUI();applyFilters();});
+$('statusSel').onchange=e=>{state.status=e.target.value;saveUI();applyFilters();};
+$('sortSel').onchange=e=>{state.sort=e.target.value;saveUI();applyFilters();};
+$$('.viewtog button').forEach(b=>b.onclick=()=>{
+ state.view=b.dataset.view;$$('.viewtog button').forEach(x=>x.classList.toggle('on',x===b));
+ $('sortSel').disabled=state.view!=='list';saveUI();applyFilters();
+});
+$('clearFilters').onclick=()=>{
+ state.q='';state.type='all';state.status='all';
+ $('search').value='';$('statusSel').value='all';
+ $$('.chip').forEach(x=>x.classList.toggle('on',x.dataset.type==='all'));
+ saveUI();applyFilters();
+};
+$('ctaContinue').onclick=continueLearning;
+$('ctaStart').onclick=continueLearning;
+$('btnContinue2').onclick=continueLearning;
+$('btnReset').onclick=resetAll;
+function paintRange(el){const p=(el.value-el.min)/(el.max-el.min)*100;el.style.background='linear-gradient(90deg,var(--orange) '+p+'%,var(--line) '+p+'%)';}
+const tempo=$('tempo');
+tempo.value=state.tempo;paintRange(tempo);$('tempoVal').textContent=state.tempo+' ч/нед';
+tempo.addEventListener('input',()=>{state.tempo=+tempo.value;paintRange(tempo);$('tempoVal').textContent=state.tempo+' ч/нед';try{localStorage.setItem(TKEY,state.tempo);}catch(e){}updateFinish();});
+
+/* ================= КЛАВИАТУРА / НАВИГАЦИЯ ================= */
+const isTyping=()=>['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName);
+document.addEventListener('keydown',e=>{
+ if(e.key==='Escape'){if(drawerId)closeDrawer();else $('mmenu').classList.remove('open');return;}
+ if(drawerId&&!isTyping()){if(e.key==='ArrowLeft'){e.preventDefault();drawerNav(-1);}if(e.key==='ArrowRight'){e.preventDefault();drawerNav(1);}return;}
+ if(e.key==='/'&&!isTyping()){e.preventDefault();$('search').focus();}
+});
+$('burger').onclick=()=>$('mmenu').classList.toggle('open');
+$$('#mmenu a').forEach(a=>a.addEventListener('click',()=>$('mmenu').classList.remove('open')));
+let scrollTick=false;
+addEventListener('scroll',()=>{
+ if(scrollTick)return;scrollTick=true;
+ requestAnimationFrame(()=>{
+  document.documentElement.style.setProperty('--sy',scrollY);
+  $('nav').classList.toggle('scrolled',scrollY>10);
+  scrollTick=false;
+ });
+},{passive:true});
+const secIO=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){$$('.nav-links a').forEach(a=>a.classList.toggle('active',a.dataset.sec===en.target.id));}});},{rootMargin:'-40% 0px -55% 0px'});
+['map','progress','resources','tips'].forEach(id=>secIO.observe($(id)));
+const revIO=new IntersectionObserver(es=>{es.forEach(en=>{if(en.isIntersecting){en.target.classList.add('in');revIO.unobserve(en.target);}});},{threshold:.1,rootMargin:'0px 0px -30px 0px'});
+function countUp(el,target){
+ if(REDUCED){el.textContent=target;return;}
+ const t0=performance.now(),dur=1000;
+ const step=t=>{const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=Math.round(target*e);if(p<1)requestAnimationFrame(step);};
+ requestAnimationFrame(step);
+}
+
+/* ================= БИБЛИОТЕКА РЕСУРСОВ ================= */
+const LIB=[
+ {title:'Справочники',k:'a',links:[
+  ['Blender Manual','Каждая кнопка объяснена','https://docs.blender.org/manual/en/latest/','EN'],
+  ['Blender Tutorials','Официальная подборка уроков','https://www.blender.org/support/tutorials/','EN'],
+  ['Blender Studio Training','Курсы от команды Blender','https://studio.blender.org/training/','EN'],
+  ['CG Cookie','Курсы + бесплатный блог','https://cgcookie.com','EN']]},
+ {title:'YouTube-каналы',k:'v',links:[
+  ['Blender Guru','Пончик и разборы рендера','https://www.youtube.com/@blenderguru','EN'],
+  ['Grant Abbitt','Лучший друг новичка','https://www.youtube.com/@grabbitt','EN'],
+  ['Polygon Runway','Low-poly и изометрия','https://www.youtube.com/@PolygonRunway','EN'],
+  ['Blender Official','Fundamentals и релизы','https://www.youtube.com/@BlenderOfficial','EN'],
+  ['Денис Кожар','Уроки Blender на русском','https://www.youtube.com/@DenisKozhar','RU'],
+  ['VideoSmile','Русскоязычные курсы','https://www.youtube.com/@VideoSmile','RU']]},
+ {title:'Ассеты',k:'t',links:[
+  ['Poly Haven','HDRI, текстуры, модели. CC0','https://polyhaven.com','EN'],
+  ['ambientCG','Сотни PBR-материалов. CC0','https://ambientcg.com','EN'],
+  ['BlenderKit','Материалы прямо во вьюпорте','https://www.blenderkit.com','EN'],
+  ['Sketchfab','Референсы и чужие сетки','https://sketchfab.com','EN']]},
+ {title:'Комьюнити',k:'c',links:[
+  ['Blender Artists','Главный форум: фидбек','https://blenderartists.org','EN'],
+  ['Blender Stack Exchange','Ответы на «почему не работает»','https://blender.stackexchange.com','EN'],
+  ['r/blender','Работы, мемы, советы','https://www.reddit.com/r/blender/','EN'],
+  ['Blender Nation','Новости экосистемы','https://www.blendernation.com','EN']]}];
+$('resGrid').innerHTML=LIB.map((g,i)=>'<div class="res-group reveal" style="--d:'+(i*70)+'ms"><div class="rg-head"><span class="rg-ic k-'+g.k+'">'+IC[g.k]+'</span><h3>'+g.title+'</h3></div><div class="rg-links">'+
+ g.links.map(l=>'<a class="rlink" href="'+l[2]+'" target="_blank" rel="noopener"><span class="rt"><b>'+l[0]+'</b><i>'+l[1]+'</i></span><em class="lang'+(l[3]==='RU'?' ru':'')+'">'+l[3]+'</em>'+IC.arr+'</a>').join('')+'</div></div>').join('');
+
+/* ================= 3D-ВЬЮПОРТ (софтверный рендер пончика) ================= */
+const canvas=$('vpCanvas'),stage=$('vpStage'),ctx=canvas.getContext('2d');
+const COLORS={orange:[255,122,28],blue:[63,140,255],green:[126,222,87]};
+const vp={yaw:.7,pitch:.35,dist:4.6,tYaw:.7,tPitch:.35,tDist:4.6,mode:'wire',density:24,speed:.5,glow:.55,light:135,grid:true,auto:!REDUCED,color:'orange',visible:true};
+let W=0,H=0,DPR=1,vignette=null,geo=null,rx,ry,rz,px,py,pz,faceOrder,fz;
+let gizmoBalls=[],fps=60,lastT=0,statsT=0;
+const pointers=new Map();let lastPinch=0,lastDrag=null;
+function buildTorus(U){
+ const V=Math.max(8,Math.round(U*.55)),R0=1,r0=.42,n=U*V;
+ const pos=new Float32Array(n*3);
+ for(let i=0;i<U;i++){const u=i/U*Math.PI*2,cu=Math.cos(u),su=Math.sin(u);
+  for(let j=0;j<V;j++){const v=j/V*Math.PI*2,k=(i*V+j)*3;
+   pos[k]=(R0+r0*Math.cos(v))*cu;pos[k+1]=r0*Math.sin(v);pos[k+2]=(R0+r0*Math.cos(v))*su;}}
+ const faces=[],edges=[];
+ for(let i=0;i<U;i++){const i2=(i+1)%U;
+  for(let j=0;j<V;j++){const j2=(j+1)%V,a=i*V+j,b=i2*V+j,c=i2*V+j2,d=i*V+j2;
+   faces.push([a,b,c,d]);edges.push([a,b],[a,d]);}}
+ geo={U,V,n,pos,faces,edges};
+ rx=new Float32Array(n);ry=new Float32Array(n);rz=new Float32Array(n);
+ px=new Float32Array(n);py=new Float32Array(n);pz=new Float32Array(n);
+ faceOrder=faces.map((_,i)=>i);fz=new Float32Array(faces.length);
+}
+function resize(){
+ const w=stage.clientWidth,h=stage.clientHeight;if(!w||!h)return;
+ DPR=Math.min(devicePixelRatio||1,2);W=w;H=h;
+ canvas.width=Math.round(w*DPR);canvas.height=Math.round(h*DPR);
+ ctx.setTransform(DPR,0,0,DPR,0,0);
+ vignette=ctx.createRadialGradient(w/2,h*.45,Math.min(w,h)*.2,w/2,h/2,Math.max(w,h)*.78);
+ vignette.addColorStop(0,'#161a23');vignette.addColorStop(1,'#0e1015');
+}
+new ResizeObserver(resize).observe(stage);
+new IntersectionObserver(es=>{vp.visible=es[0].isIntersecting;},{threshold:0}).observe(stage);
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function rot(x,y,z,cy,sy,cp,sp){const x1=x*cy-z*sy,z1=x*sy+z*cy;return[x1,y*cp-z1*sp,y*sp+z1*cp];}
+function frame(t){
+ requestAnimationFrame(frame);
+ const dt=clamp(t-lastT||16,1,100);lastT=t;
+ if(!vp.visible||document.hidden||!W||!geo)return;
+ fps=fps*.92+(1000/dt)*.08;
+ if(vp.auto&&pointers.size===0)vp.tYaw+=.0035*vp.speed*(dt/16.7);
+ const f=1-Math.exp(-dt/90);
+ vp.yaw+=(vp.tYaw-vp.yaw)*f;vp.pitch+=(vp.tPitch-vp.pitch)*f;vp.dist+=(vp.tDist-vp.dist)*f;
+ const cy=Math.cos(vp.yaw),sy=Math.sin(vp.yaw),cp=Math.cos(vp.pitch),sp=Math.sin(vp.pitch);
+ const focal=Math.min(W,H)*1.15,cx=W/2,cy2=H/2,dist=vp.dist;
+ for(let i=0;i<geo.n;i++){
+  const k=i*3,p=rot(geo.pos[k],geo.pos[k+1],geo.pos[k+2],cy,sy,cp,sp);
+  rx[i]=p[0];ry[i]=p[1];rz[i]=p[2];
+  const zc=p[2]+dist,s=focal/zc;
+  px[i]=cx+p[0]*s;py[i]=cy2-p[1]*s;pz[i]=zc;
+ }
+ ctx.fillStyle=vignette||'#12151b';ctx.fillRect(0,0,W,H);
+ const proj=(x,y,z)=>{const p=rot(x,y,z,cy,sy,cp,sp),zc=p[2]+dist,s=focal/zc;return[cx+p[0]*s,cy2-p[1]*s,zc];};
+ if(vp.grid){
+  ctx.lineWidth=1;
+  for(let g=-2.5;g<=2.51;g+=.5){
+   const a1=proj(g,-1.05,-2.5),a2=proj(g,-1.05,2.5),b1=proj(-2.5,-1.05,g),b2=proj(2.5,-1.05,g);
+   ctx.strokeStyle='rgba(122,144,196,.10)';
+   if(a1[2]>.3&&a2[2]>.3){ctx.beginPath();ctx.moveTo(a1[0],a1[1]);ctx.lineTo(a2[0],a2[1]);ctx.stroke();}
+   if(b1[2]>.3&&b2[2]>.3){ctx.beginPath();ctx.moveTo(b1[0],b1[1]);ctx.lineTo(b2[0],b2[1]);ctx.stroke();}
+  }
+  const x1=proj(-2.5,-1.05,0),x2=proj(2.5,-1.05,0),z1=proj(0,-1.05,-2.5),z2=proj(0,-1.05,2.5);
+  ctx.lineWidth=1.4;
+  if(x1[2]>.3&&x2[2]>.3){ctx.strokeStyle='rgba(255,77,97,.4)';ctx.beginPath();ctx.moveTo(x1[0],x1[1]);ctx.lineTo(x2[0],x2[1]);ctx.stroke();}
+  if(z1[2]>.3&&z2[2]>.3){ctx.strokeStyle='rgba(63,140,255,.4)';ctx.beginPath();ctx.moveTo(z1[0],z1[1]);ctx.lineTo(z2[0],z2[1]);ctx.stroke();}
+ }
+ const col=COLORS[vp.color],rgb=(a)=>'rgba('+col[0]+','+col[1]+','+col[2]+','+a+')';
+ const depthT=zc=>clamp(1-(zc-(dist-1.5))/3,0,1);
+ if(vp.mode==='solid'){
+  const la=vp.light*Math.PI/180;let L=rot(Math.cos(la),.6,Math.sin(la),cy,sy,cp,sp);
+  const ll=Math.hypot(L[0],L[1],L[2]);L=[L[0]/ll,L[1]/ll,L[2]/ll];
+  for(let i=0;i<geo.faces.length;i++){const f=geo.faces[i];fz[i]=(pz[f[0]]+pz[f[1]]+pz[f[2]]+pz[f[3]])/4;}
+  faceOrder.sort((a,b)=>fz[b]-fz[a]);
+  ctx.lineWidth=.8;
+  for(let oi=0;oi<faceOrder.length;oi++){
+   const fc=geo.faces[faceOrder[oi]],a=fc[0],b=fc[1],d=fc[3];
+   const e1x=rx[d]-rx[a],e1y=ry[d]-ry[a],e1z=rz[d]-rz[a];
+   const e2x=rx[b]-rx[a],e2y=ry[b]-ry[a],e2z=rz[b]-rz[a];
+   let nx=e1y*e2z-e1z*e2y,ny=e1z*e2x-e1x*e2z,nz=e1x*e2y-e1y*e2x;
+   if(nz>=0)continue;
+   const nl=Math.hypot(nx,ny,nz)||1;nx/=nl;ny/=nl;nz/=nl;
+   const lam=Math.max(0,nx*L[0]+ny*L[1]+nz*L[2]);
+   const shade=.24+.85*lam+vp.glow*.15,spec=Math.pow(lam,12)*70;
+   const r=clamp(Math.round(col[0]*shade+spec),0,255),g=clamp(Math.round(col[1]*shade+spec),0,255),bl=clamp(Math.round(col[2]*shade+spec),0,255);
+   const cs='rgb('+r+','+g+','+bl+')';
+   ctx.fillStyle=cs;ctx.strokeStyle=cs;
+   ctx.beginPath();ctx.moveTo(px[fc[0]],py[fc[0]]);ctx.lineTo(px[fc[1]],py[fc[1]]);ctx.lineTo(px[fc[2]],py[fc[2]]);ctx.lineTo(px[fc[3]],py[fc[3]]);ctx.closePath();ctx.fill();ctx.stroke();
+  }
+ }else if(vp.mode==='wire'){
+  const buckets=[[],[],[],[]];
+  for(const e of geo.edges){const t=depthT((pz[e[0]]+pz[e[1]])/2);buckets[Math.min(3,Math.floor(t*4))].push(e);}
+  const coreA=[.16,.32,.55,.9],haloA=[.04,.08,.14,.22];
+  for(let pass=0;pass<2;pass++){
+   ctx.lineWidth=pass===0?5:1.2;
+   for(let b=0;b<4;b++){
+    const a=pass===0?haloA[b]*vp.glow:coreA[b];if(a<=.005)continue;
+    ctx.strokeStyle=rgb(a);ctx.beginPath();
+    for(const e of buckets[b]){ctx.moveTo(px[e[0]],py[e[0]]);ctx.lineTo(px[e[1]],py[e[1]]);}
+    ctx.stroke();
+   }
+  }
+ }else if(vp.mode==='xray'){
+  ctx.globalCompositeOperation='lighter';
+  ctx.lineWidth=3;ctx.strokeStyle=rgb(.05+vp.glow*.06);ctx.beginPath();
+  for(const e of geo.edges){ctx.moveTo(px[e[0]],py[e[0]]);ctx.lineTo(px[e[1]],py[e[1]]);}
+  ctx.stroke();
+  ctx.lineWidth=1;ctx.strokeStyle=rgb(.12+vp.glow*.14);ctx.beginPath();
+  for(const e of geo.edges){ctx.moveTo(px[e[0]],py[e[0]]);ctx.lineTo(px[e[1]],py[e[1]]);}
+  ctx.stroke();
+  ctx.fillStyle=rgb(.4);
+  for(let i=0;i<geo.n;i+=2){ctx.beginPath();ctx.arc(px[i],py[i],1.3,0,7);ctx.fill();}
+  ctx.globalCompositeOperation='source-over';
+ }else{
+  for(let pass=0;pass<2;pass++){
+   for(let i=0;i<geo.n;i++){
+    const t=depthT(pz[i]),r=clamp(11.5/pz[i],1,5)*(pass===0?2.6:1);
+    const a=pass===0?(.05+vp.glow*.1)*t:.25+.65*t;
+    ctx.fillStyle=rgb(a);ctx.beginPath();ctx.arc(px[i],py[i],r,0,7);ctx.fill();
+   }
+  }
+ }
+ /* гизмо осей */
+ const gx=W-52,gy=52,len=26;
+ const axes=[[1,0,0,'#ff4d61','X'],[0,1,0,'#7ede57','Y'],[0,0,1,'#3f8cff','Z']];
+ const gpr=axes.map(a=>{const p=rot(a[0],a[1],a[2],cy,sy,cp,sp);return{x:gx+p[0]*len,y:gy-p[1]*len,z:p[2],c:a[3],l:a[4],nx:gx-p[0]*len*.6,ny:gy+p[1]*len*.6};});
+ gpr.sort((a,b)=>b.z-a.z);
+ gizmoBalls=[];
+ ctx.font='700 9px JetBrains Mono,monospace';ctx.textAlign='center';ctx.textBaseline='middle';
+ for(const g of gpr){
+  ctx.strokeStyle='rgba(154,162,181,.25)';ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(gx,gy);ctx.lineTo(g.nx,g.ny);ctx.stroke();
+  ctx.fillStyle='rgba(154,162,181,.2)';ctx.beginPath();ctx.arc(g.nx,g.ny,4,0,7);ctx.fill();
+  ctx.strokeStyle=g.c;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(gx,gy);ctx.lineTo(g.x,g.y);ctx.stroke();
+  ctx.fillStyle=g.c;ctx.beginPath();ctx.arc(g.x,g.y,8,0,7);ctx.fill();
+  ctx.fillStyle='#10131a';ctx.fillText(g.l,g.x,g.y+.5);
+  gizmoBalls.push({x:g.x,y:g.y,axis:g.l});
+ }
+ ctx.font='700 9px JetBrains Mono,monospace';ctx.textAlign='right';
+ ctx.fillStyle='rgba(154,162,181,.4)';ctx.fillText('blender · roadmap',W-12,H-12);
+ ctx.textAlign='left';
+ if(t-statsT>400){statsT=t;$('vpStats').textContent=geo.n+' verts · '+geo.faces.length+' faces · '+Math.round(fps)+' fps';}
+}
+/* управление камерой */
+canvas.addEventListener('pointerdown',e=>{
+ const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+ for(const g of gizmoBalls){
+  if(Math.hypot(x-g.x,y-g.y)<12){
+   vp.auto=false;$('tAuto').checked=false;
+   if(g.axis==='X'){vp.tYaw=Math.PI/2;vp.tPitch=0;}
+   else if(g.axis==='Y'){vp.tPitch=1.5;}
+   else{vp.tYaw=0;vp.tPitch=0;}
+   vp.tDist=4.6;return;
+  }
+ }
+ pointers.set(e.pointerId,{x,y});
+ try{canvas.setPointerCapture(e.pointerId);}catch(err){}
+ if(pointers.size===1)lastDrag={x,y};
+ if(pointers.size===2){const p=[...pointers.values()];lastPinch=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);}
+ canvas.classList.add('grabbing');
+});
+canvas.addEventListener('pointermove',e=>{
+ if(!pointers.has(e.pointerId))return;
+ const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;
+ pointers.set(e.pointerId,{x,y});
+ if(pointers.size===2){
+  const p=[...pointers.values()],d=Math.hypot(p[0].x-p[1].x,p[0].y-p[1].y);
+  if(lastPinch>0&&d>0)vp.tDist=clamp(vp.tDist*lastPinch/d,2.4,9);
+  lastPinch=d;
+ }else if(lastDrag){
+  vp.tYaw+=(x-lastDrag.x)*.0055;
+  vp.tPitch=clamp(vp.tPitch+(y-lastDrag.y)*.0055,-1.5,1.5);
+  lastDrag={x,y};
+ }
+});
+const pUp=e=>{
+ pointers.delete(e.pointerId);lastPinch=0;
+ if(pointers.size===1)lastDrag=[...pointers.values()][0];
+ if(pointers.size===0){lastDrag=null;canvas.classList.remove('grabbing');}
+};
+canvas.addEventListener('pointerup',pUp);canvas.addEventListener('pointercancel',pUp);
+canvas.addEventListener('wheel',e=>{e.preventDefault();vp.tDist=clamp(vp.tDist*Math.exp(e.deltaY*.0012),2.4,9);},{passive:false});
+canvas.addEventListener('dblclick',resetCam);
+function resetCam(){vp.tYaw=.7;vp.tPitch=.35;vp.tDist=4.6;}
+/* панель управления */
+$$('.seg button').forEach(b=>b.onclick=()=>{vp.mode=b.dataset.mode;$$('.seg button').forEach(x=>x.classList.toggle('on',x===b));});
+$$('.swatch').forEach(b=>b.onclick=()=>{vp.color=b.dataset.color;$$('.swatch').forEach(x=>x.classList.toggle('on',x===b));});
+const rD=$('rDensity'),rS=$('rSpeed'),rG=$('rGlow'),rL=$('rLight');
+rD.addEventListener('input',()=>{vp.density=+rD.value;$('vDensity').textContent=rD.value;paintRange(rD);buildTorus(vp.density);});
+rS.addEventListener('input',()=>{vp.speed=rS.value/100;$('vSpeed').textContent=vp.speed.toFixed(1);paintRange(rS);});
+rG.addEventListener('input',()=>{vp.glow=rG.value/100;$('vGlow').textContent=rG.value+'%';paintRange(rG);});
+rL.addEventListener('input',()=>{vp.light=+rL.value;$('vLight').textContent=rL.value+'°';paintRange(rL);});
+$('tGrid').onchange=e=>vp.grid=e.target.checked;
+$('tAuto').onchange=e=>vp.auto=e.target.checked;
+$('btnResetCam').onclick=resetCam;
+$('btnRandom').onclick=()=>{
+ vp.density=8+2*Math.floor(Math.random()*17);
+ vp.mode=['wire','solid','xray','points'][Math.floor(Math.random()*4)];
+ vp.color=['orange','blue','green'][Math.floor(Math.random()*3)];
+ vp.speed=.2+Math.random()*1.2;vp.glow=.2+Math.random()*.8;vp.light=Math.floor(Math.random()*360);vp.auto=true;
+ buildTorus(vp.density);syncVpUI();
+};
+$('btnPng').onclick=()=>{
+ const a=document.createElement('a');a.href=canvas.toDataURL('image/png');a.download='blender-roadmap-viewport.png';a.click();
+ toast('Снимок вьюпорта сохранён в PNG','ok');
+};
+function syncVpUI(){
+ rD.value=vp.density;$('vDensity').textContent=vp.density;
+ rS.value=Math.round(vp.speed*100);$('vSpeed').textContent=vp.speed.toFixed(1);
+ rG.value=Math.round(vp.glow*100);$('vGlow').textContent=Math.round(vp.glow*100)+'%';
+ rL.value=vp.light;$('vLight').textContent=vp.light+'°';
+ [rD,rS,rG,rL].forEach(paintRange);
+ $$('.seg button').forEach(x=>x.classList.toggle('on',x.dataset.mode===vp.mode));
+ $$('.swatch').forEach(x=>x.classList.toggle('on',x.dataset.color===vp.color));
+ $('tGrid').checked=vp.grid;$('tAuto').checked=vp.auto;
+}
+
+/* ================= ИНИЦИАЛИЗАЦИЯ ================= */
+buildMap();buildMini();
+$$('.chip').forEach(x=>x.classList.toggle('on',x.dataset.type===state.type));
+$('statusSel').value=state.status;$('sortSel').value=state.sort;
+$('sortSel').disabled=state.view!=='list';
+$$('.viewtog button').forEach(x=>x.classList.toggle('on',x.dataset.view===state.view));
+buildTorus(vp.density);resize();syncVpUI();
+refresh();
+requestAnimationFrame(frame);
+$$('.reveal').forEach(el=>revIO.observe(el));
+$$('.stage').forEach(el=>setTimeout(()=>el.classList.add('in'),60));
+countUp($('statMods'),COURSE.length);
+countUp($('statLess'),LESSONS.length);
+countUp($('statHours'),TOTAL_H);
+countUp($('statRes'),TOTAL_RES);
+})();
+</script>
+</body>
+</html>
